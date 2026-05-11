@@ -40,16 +40,13 @@
     .divider { display: flex; align-items: center; gap: 12px; margin: 1.5rem 0; }
     .divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
     .divider span { font-size: 12px; color: var(--text-3); }
-    .paste-area { display: none; }
-    .paste-area.open { display: block; animation: fadeUp 0.3s ease both; }
-    textarea { width: 100%; min-height: 160px; resize: vertical; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--navy-2); line-height: 1.6; outline: none; transition: border-color 0.15s; font-weight: 300; }
+    .paste-area { display: block; }
+    textarea { width: 100%; min-height: 160px; resize: vertical; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--navy-2); line-height: 1.6; outline: none; transition: border-color 0.15s; font-weight: 300; margin-top: 1.5rem; }
     textarea:focus { border-color: var(--green); }
     textarea::placeholder { color: var(--text-3); }
     .btn-primary { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.75rem; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; }
     .btn-primary:hover { background: #35c494; box-shadow: 0 0 20px rgba(46,168,126,0.3); }
     .btn-primary:active { transform: scale(0.99); }
-    .btn-secondary { width: 100%; padding: 12px; background: var(--green-light); color: var(--text-2); border: 1px solid rgba(46,168,126,0.2); border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s, color 0.15s; }
-    .btn-secondary:hover { background: var(--navy-2); color: var(--text); }
     .trust-row { display: flex; gap: 24px; margin-top: 1.75rem; justify-content: center; }
     .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-3); font-weight: 300; }
     .trust-item svg { width: 13px; height: 13px; opacity: 0.5; }
@@ -161,12 +158,10 @@
       <p class="drop-title">Drop your offer letter</p>
       <p class="drop-sub">Click to browse · PDF, Word, or text file</p>
     </div>
-    <div class="divider"><hr><span>or paste the text</span><hr></div>
     <div class="paste-area" id="paste-area">
-      <textarea id="offer-text" placeholder="Paste your offer letter text here..."></textarea>
+      <textarea id="offer-text" placeholder="Or paste your offer letter text here..."></textarea>
       <button class="btn-primary" onclick="analyzeText()">Analyze my offer →</button>
     </div>
-    <button class="btn-secondary" id="toggle-btn" onclick="togglePaste()">Paste text instead</button>
     <div class="error" id="error-box"></div>
     <div class="trust-row">
       <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private & secure</div>
@@ -194,7 +189,6 @@
   dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); const file = e.dataTransfer.files[0]; if (file) readAndAnalyze(file); });
   fileInput.addEventListener('change', e => { if (e.target.files[0]) readAndAnalyze(e.target.files[0]); });
   function readAndAnalyze(file) { const reader = new FileReader(); reader.onload = e => analyze(e.target.result); reader.onerror = () => showError('Could not read the file. Try pasting the text instead.'); reader.readAsText(file); }
-  function togglePaste() { const area = document.getElementById('paste-area'); const btn = document.getElementById('toggle-btn'); const open = area.classList.toggle('open'); btn.textContent = open ? 'Hide paste area' : 'Paste text instead'; }
   function analyzeText() { const text = document.getElementById('offer-text').value.trim(); if (!text || text.length < 50) { showError('Please paste your full offer letter text first.'); return; } analyze(text); }
   function showError(msg) { const el = document.getElementById('error-box'); el.textContent = msg; el.style.display = 'block'; }
   function show(id) { ['input-view','loading-view','results-view'].forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; }); }
@@ -235,7 +229,7 @@
     const compHtml = (r.compensation||[]).map(c=>'<div class="row"><div><div class="row-label">'+c.label+'</div><div class="row-desc">'+c.description+'</div></div><div class="row-value">'+c.value+'</div></div>').join('');
     const benefitsHtml = (r.benefits||[]).map(b=>'<div class="row"><div><div class="row-label">'+b.label+'</div><div class="row-desc">'+b.description+'</div></div><div><span class="badge '+badgeClass(b.badge)+'">'+(b.badgeText||b.badge)+'</span></div></div>').join('');
     const flagsHtml = (r.flags||[]).map(f=>'<div class="flag">'+flagDot(f.type)+'<div><div class="flag-title">'+f.title+'</div><div class="flag-detail">'+f.detail+'</div></div></div>').join('');
-    const fullSummary = (r.role||'Offer')+(r.company?' — '+r.company:'')+'\n\n=== Overview ===\n'+(r.stats||[]).map(s=>s.label+': '+s.value).join('\n')+'\n\n=== Compensation ===\n'+(r.compensation||[]).map(c=>c.label+': '+c.value+'\n'+c.description).join('\n\n')+'\n\n=== Benefits ===\n'+(r.benefits||[]).map(b=>b.label+' ('+(b.badgeText||b.badge)+'): '+b.description).join('\n\n')+'\n\n=== Things to know ===\n'+(r.flags||[]).map(f=>f.title+': '+f.detail).join('\n\n');
+    const fullSummary = '★ Analyzed by Klearer — klearer.vercel.app\n\n'+(r.role||'Offer')+(r.company?' — '+r.company:'')+'\n\n=== Overview ===\n'+(r.stats||[]).map(s=>s.label+': '+s.value).join('\n')+'\n\n=== Compensation ===\n'+(r.compensation||[]).map(c=>c.label+': '+c.value+'\n'+c.description).join('\n\n')+'\n\n=== Benefits ===\n'+(r.benefits||[]).map(b=>b.label+' ('+(b.badgeText||b.badge)+'): '+b.description).join('\n\n')+'\n\n=== Things to know ===\n'+(r.flags||[]).map(f=>f.title+': '+f.detail).join('\n\n');
     document.getElementById('results-content').innerHTML =
       '<div class="summary-card"><div class="summary-header"><div><div class="summary-role">'+(r.role||'Your offer')+'</div>'+(r.company?'<div class="summary-company">'+r.company+'</div>':'')+'</div></div><div class="stat-grid">'+statsHtml+'</div></div>'+
       '<button class="master-copy-btn" onclick="masterCopy('+JSON.stringify(fullSummary)+', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy full summary</button>'+
@@ -262,10 +256,7 @@
       });
       document.getElementById('email-form').style.display = 'none';
       document.getElementById('email-sent').style.display = 'block';
-    } catch(err) {
-      btn.textContent = 'Send';
-      btn.disabled = false;
-    }
+    } catch(err) { btn.textContent = 'Send'; btn.disabled = false; }
   }
   async function loadBenchmark() {
     const card = document.getElementById('benchmark-card');
@@ -278,7 +269,7 @@
       const d = await res.json();
       if (!res.ok) throw new Error(d.error);
       const vc = d.verdict==='above'?'var(--green)':d.verdict==='below'?'var(--red)':'var(--amber)';
-      const bt = 'Salary Benchmark: '+d.role+'\n\nNational range: '+d.range_low+' – '+d.range_high+'\nMedian: '+d.national_median+'\nYour offer: '+(salary||'not specified')+'\n\n'+d.verdict_text+'\n\nTip: '+d.negotiation_tip+'\n\n'+d.sources;
+      const bt = '★ Analyzed by Klearer — klearer.vercel.app\n\nSalary Benchmark: '+d.role+'\n\nNational range: '+d.range_low+' – '+d.range_high+'\nMedian: '+d.national_median+'\nYour offer: '+(salary||'not specified')+'\n\n'+d.verdict_text+'\n\nTip: '+d.negotiation_tip+'\n\n'+d.sources;
       card.innerHTML = '<div class="feature-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem"><div class="card-title">Salary benchmark — '+d.role+'</div><button class="master-copy-btn" style="margin-bottom:0" onclick="masterCopy('+JSON.stringify(bt)+', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="benchmark-verdict" style="color:'+vc+'">'+d.verdict_text+'</div><div class="benchmark-range"><div class="benchmark-stat"><div class="benchmark-stat-label">Low</div><div class="benchmark-stat-value">'+d.range_low+'</div></div><div class="benchmark-stat"><div class="benchmark-stat-label">Median</div><div class="benchmark-stat-value highlight">'+d.national_median+'</div></div><div class="benchmark-stat"><div class="benchmark-stat-label">High</div><div class="benchmark-stat-value">'+d.range_high+'</div></div></div><div class="benchmark-tip">'+d.negotiation_tip+'</div><div class="benchmark-sources">'+d.sources+'</div></div>';
     } catch(err) {
       card.innerHTML = '<div class="feature-card"><div style="font-size:13px;color:var(--red)">Could not load benchmark data. Please try again.</div></div>';
