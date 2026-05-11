@@ -8,16 +8,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 async function callClaude(apiKey, prompt, maxTokens = 1500) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: maxTokens,
-      messages: [{ role: 'user', content: prompt }]
-    })
+    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] })
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error?.message || 'API error');
@@ -28,16 +20,20 @@ function parseJSON(raw) {
   const clean = raw.replace(/^```(?:json)?/m, '').replace(/```$/m, '').trim();
   const start = clean.indexOf('{');
   const end = clean.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error('No JSON found in response');
+  if (start === -1 || end === -1) throw new Error('No JSON found');
   return JSON.parse(clean.slice(start, end + 1));
 }
+
+app.get('/api/stripe-key', (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '' });
+});
 
 app.post('/api/analyze', async (req, res) => {
   const { text } = req.body;
   if (!text || text.length < 50) return res.status(400).json({ error: 'Offer letter text is too short.' });
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
-  const prompt = `You are an expert career advisor and compensation analyst. Analyze this job offer letter and return ONLY a valid JSON object — no markdown fences, no explanation, just raw JSON.
+  const prompt = `You are an expert career advisor. Analyze this job offer letter and return ONLY a valid JSON object — no markdown, no explanation.
 
 Schema:
 {
@@ -49,29 +45,17 @@ Schema:
     { "label": "PTO", "value": "X days" },
     { "label": "Start date", "value": "Month Day or Not mentioned" }
   ],
-  "compensation": [
-    { "label": "item name", "description": "plain english explanation for a first-job grad", "value": "amount or description" }
-  ],
-  "benefits": [
-    { "label": "benefit name", "description": "plain english explanation", "badge": "good|warn|danger|neutral", "badgeText": "Strong|Average|Below avg|Great|Watch out" }
-  ],
-  "flags": [
-    { "type": "warn|info|good", "title": "short title", "detail": "plain english explanation of what this means for you and what to watch out for" }
-  ]
+  "compensation": [{ "label": "item name", "description": "plain english explanation", "value": "amount" }],
+  "benefits": [{ "label": "benefit name", "description": "plain english explanation", "badge": "good|warn|danger|neutral", "badgeText": "Strong|Average|Below avg|Great|Watch out" }],
+  "flags": [{ "type": "warn|info|good", "title": "short title", "detail": "plain english explanation" }]
 }
-
-Include all compensation (base, bonus, equity, sign-on), all mentioned benefits, and flag anything unusual like non-competes, clawbacks, vesting cliffs, at-will clauses, IP assignment, or anything worth negotiating.
 
 Offer letter:
 ${text.slice(0, 4000)}`;
   try {
     const raw = await callClaude(apiKey, prompt);
-    const result = parseJSON(raw);
-    res.json(result);
-  } catch (err) {
-    console.error('Analyze error:', err);
-    res.status(500).json({ error: err.message });
-  }
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/negotiate', async (req, res) => {
@@ -79,29 +63,14 @@ app.post('/api/negotiate', async (req, res) => {
   if (!role) return res.status(400).json({ error: 'Missing offer details.' });
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
-  const prompt = `You are an expert salary negotiation coach. Write a personalized negotiation script for someone who just received a job offer.
-
-Details:
-- Role: ${role}
-- Company: ${company || 'the company'}
-- Offered salary: ${salary || 'not specified'}
-- Offer context: ${offerText ? offerText.slice(0, 1000) : 'not provided'}
-
-Write a negotiation script they can use in an email or phone call. Make it:
-- Confident but professional and warm
-- Specific — mention the role and show genuine excitement
-- Ask for 10-15% more than offered, or improvements to benefits/PTO if salary seems fair
-- Include 2-3 talking points justifying the ask (market data, skills, value they bring)
-- End with an easy out so the conversation stays positive
-
-Format it as a ready-to-send email with subject line. Keep it under 200 words. Write it in first person as if you are the candidate.`;
+  const prompt = `Write a professional salary negotiation email for someone who received a job offer.
+Role: ${role}, Company: ${company || 'the company'}, Salary: ${salary || 'not specified'}
+Context: ${offerText ? offerText.slice(0, 1000) : 'not provided'}
+Make it confident, warm, specific. Ask for 10-15% more. Include 2-3 justifications. Keep under 200 words. Include subject line. Write in first person.`;
   try {
     const script = await callClaude(apiKey, prompt, 800);
     res.json({ script: script.trim() });
-  } catch (err) {
-    console.error('Negotiate error:', err);
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/benchmark', async (req, res) => {
@@ -109,32 +78,84 @@ app.post('/api/benchmark', async (req, res) => {
   if (!role) return res.status(400).json({ error: 'Missing role.' });
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
-  const prompt = `You are a compensation data expert. Provide national salary benchmark data for the following role based on your knowledge of US compensation data from sources like Bureau of Labor Statistics, Glassdoor, LinkedIn, and Levels.fyi.
-
-Role: ${role}
-Offered salary: ${salary || 'not specified'}
-
-Return ONLY a valid JSON object, no markdown, no explanation:
-{
-  "role": "normalized job title",
-  "national_median": "$XX,XXX",
-  "range_low": "$XX,XXX",
-  "range_high": "$XX,XXX",
-  "percentile": "25th|50th|75th|90th",
-  "verdict": "below|at|above",
-  "verdict_text": "one sentence plain english verdict e.g. Your offer is right at the national median for this role.",
-  "sources": "Based on BLS, Glassdoor, and LinkedIn data",
-  "top_paying_industries": ["industry 1", "industry 2", "industry 3"],
-  "negotiation_tip": "one specific tip based on where their salary falls in the range"
-}`;
+  const prompt = `Provide US national salary benchmark data for: ${role}. Offered: ${salary || 'not specified'}.
+Return ONLY valid JSON:
+{"role":"normalized title","national_median":"$XX,XXX","range_low":"$XX,XXX","range_high":"$XX,XXX","verdict":"below|at|above","verdict_text":"one sentence verdict","sources":"Based on BLS, Glassdoor, LinkedIn data","negotiation_tip":"one specific tip"}`;
   try {
     const raw = await callClaude(apiKey, prompt, 600);
-    const result = parseJSON(raw);
-    res.json(result);
-  } catch (err) {
-    console.error('Benchmark error:', err);
-    res.status(500).json({ error: err.message });
-  }
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/interview-free', async (req, res) => {
+  const { jd } = req.body;
+  if (!jd || jd.length < 50) return res.status(400).json({ error: 'Job description too short.' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
+  const prompt = `Analyze this job description and generate 5 interview questions. Return ONLY valid JSON:
+{
+  "role": "job title",
+  "company": "company name or Unknown",
+  "questions": [
+    { "question": "interview question", "tip": "what they are testing and how to answer well in 1-2 sentences" }
+  ]
+}
+Make questions specific to the role requirements. Focus on behavioral and skills-based questions.
+Job description: ${jd.slice(0, 3000)}`;
+  try {
+    const raw = await callClaude(apiKey, prompt, 1000);
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/create-checkout', async (req, res) => {
+  const { role, company, jd } = req.body;
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) return res.status(500).json({ error: 'Stripe not configured.' });
+  try {
+    const Stripe = require('stripe');
+    const stripe = Stripe(stripeKey);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Klearer Interview Prep — Full Pack',
+            description: `15 company-specific questions for ${role || 'your role'} at ${company || 'your company'}`,
+          },
+          unit_amount: 199,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${req.headers.origin}/interview-success.html?role=${encodeURIComponent(role||'')}&company=${encodeURIComponent(company||'')}&jd=${encodeURIComponent((jd||'').slice(0,500))}`,
+      cancel_url: `${req.headers.origin}/interview.html`,
+    });
+    res.json({ url: session.url });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/interview-paid', async (req, res) => {
+  const { role, company, jd } = req.body;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
+  const prompt = `You are an expert interview coach. Generate 15 highly specific interview questions for this role and company.
+Role: ${role}, Company: ${company}
+Job description: ${(jd||'').slice(0, 2000)}
+
+Return ONLY valid JSON:
+{
+  "company_insights": "2-3 sentences about the company culture, recent news, or what they value",
+  "questions": [
+    { "category": "Behavioral|Technical|Company-specific|Culture", "question": "specific question", "tip": "what they are testing and how to answer well" }
+  ]
+}
+Make at least 5 questions company-specific. Be specific, not generic.`;
+  try {
+    const raw = await callClaude(apiKey, prompt, 2000);
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 const PORT = process.env.PORT || 3000;
