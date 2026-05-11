@@ -117,17 +117,7 @@ app.post('/api/create-checkout', async (req, res) => {
     const stripe = Stripe(stripeKey);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [{
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'Klearer Interview Prep — Full Pack',
-            description: `15 company-specific questions for ${role || 'your role'} at ${company || 'your company'}`,
-          },
-          unit_amount: 199,
-        },
-        quantity: 1,
-      }],
+      line_items: [{ price_data: { currency: 'usd', product_data: { name: 'Klearer Interview Prep — Full Pack', description: `15 company-specific questions for ${role || 'your role'} at ${company || 'your company'}` }, unit_amount: 199 }, quantity: 1 }],
       mode: 'payment',
       success_url: `${req.headers.origin}/interview-success.html?role=${encodeURIComponent(role||'')}&company=${encodeURIComponent(company||'')}&jd=${encodeURIComponent((jd||'').slice(0,500))}`,
       cancel_url: `${req.headers.origin}/interview.html`,
@@ -143,13 +133,10 @@ app.post('/api/interview-paid', async (req, res) => {
   const prompt = `You are an expert interview coach. Generate 15 highly specific interview questions for this role and company.
 Role: ${role}, Company: ${company}
 Job description: ${(jd||'').slice(0, 2000)}
-
 Return ONLY valid JSON:
 {
   "company_insights": "2-3 sentences about the company culture, recent news, or what they value",
-  "questions": [
-    { "category": "Behavioral|Technical|Company-specific|Culture", "question": "specific question", "tip": "what they are testing and how to answer well" }
-  ]
+  "questions": [{ "category": "Behavioral|Technical|Company-specific|Culture", "question": "specific question", "tip": "what they are testing and how to answer well" }]
 }
 Make at least 5 questions company-specific. Be specific, not generic.`;
   try {
@@ -158,5 +145,68 @@ Make at least 5 questions company-specific. Be specific, not generic.`;
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+app.post('/api/review-free', async (req, res) => {
+  const { role, wins } = req.body;
+  if (!role || !wins) return res.status(400).json({ error: 'Missing role or accomplishments.' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
+  const prompt = `You are an expert career coach helping someone prepare for their performance review.
+
+Role: ${role}
+Accomplishments: ${wins.slice(0, 2000)}
+
+Return ONLY valid JSON:
+{
+  "preview": "A 3-4 sentence self-evaluation preview written in first person, professional tone, highlighting their strongest impact. End with '...' to indicate there is more.",
+  "highlights": ["strongest accomplishment reframed with impact language", "second strongest", "third strongest"]
+}
+Make the preview compelling and specific. Reframe accomplishments in terms of business impact.`;
+  try {
+    const raw = await callClaude(apiKey, prompt, 800);
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/create-review-checkout', async (req, res) => {
+  const { role, wins } = req.body;
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) return res.status(500).json({ error: 'Stripe not configured.' });
+  try {
+    const Stripe = require('stripe');
+    const stripe = Stripe(stripeKey);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{ price_data: { currency: 'usd', product_data: { name: 'Klearer Performance Review Package', description: 'Full self-evaluation, raise script, promotion case, and gaps analysis' }, unit_amount: 499 }, quantity: 1 }],
+      mode: 'payment',
+      success_url: `${req.headers.origin}/review-success.html?role=${encodeURIComponent((role||'').slice(0,200))}&wins=${encodeURIComponent((wins||'').slice(0,500))}`,
+      cancel_url: `${req.headers.origin}/review.html`,
+    });
+    res.json({ url: session.url });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/review-paid', async (req, res) => {
+  const { role, wins } = req.body;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
+  const prompt = `You are an expert career coach. Generate a complete performance review package.
+
+Role: ${role}
+Accomplishments: ${(wins||'').slice(0, 2000)}
+
+Return ONLY valid JSON:
+{
+  "self_evaluation": "Full 4-6 paragraph self-evaluation written in first person, professional tone, ready to submit.",
+  "raise_script": "A 150-word script for asking for a raise, referencing their specific accomplishments.",
+  "promotion_case": "2-3 sentences making the case for promotion if applicable, or null if not applicable.",
+  "gaps": ["one gap or area to address before or during the review", "second gap if applicable"],
+  "key_metrics": ["strongest quantified achievement", "second strongest"]
+}`;
+  try {
+    const raw = await callClaude(apiKey, prompt, 2000);
+    res.json(parseJSON(raw));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Klearer running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Klearer running at
