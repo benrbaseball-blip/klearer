@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klearer — Every career decision, made klearer</title>
+  <title>Klearer — Every decision made klearer</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -18,63 +18,43 @@
     html, body { height: 100%; }
     body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
-
-    #intro {
-      position: fixed; inset: 0; z-index: 50;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: var(--navy);
-      transition: opacity 0.6s ease;
-    }
+    #intro { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--navy); transition: opacity 0.6s ease; }
     #intro.hide { opacity: 0; pointer-events: none; }
-
     .intro-logo { opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; margin-bottom: 1.5rem; }
     .intro-logo.show { opacity: 1; transform: translateY(0); }
-
     .intro-tagline { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; line-height: 1.3; }
     .intro-tagline.show { opacity: 1; transform: translateY(0); }
-    .intro-tagline em { font-style: italic; color: var(--green); }
-
+    .intro-klearer { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; font-style: italic; color: var(--green); opacity: 0; transform: translateY(8px); transition: opacity 0.6s ease, transform 0.6s ease; margin-top: 0.25rem; text-align: center; }
     #app { opacity: 0; transition: opacity 0.6s ease; position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
     #app.show { opacity: 1; }
-
     nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
     .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
     .logo em { font-style: italic; color: var(--green); }
     .nav-right { margin-left: auto; font-size: 12px; color: var(--text-3); font-weight: 300; }
-
     .container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
-
     .hero { padding: 5rem 0 3rem; text-align: center; }
     .hero-tagline { font-family: 'Instrument Serif', serif; font-size: 42px; font-weight: 400; letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.15; }
     .hero-tagline em { font-style: italic; color: var(--green); }
     .hero-sub { font-size: 15px; color: var(--text-2); font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.7; }
-
     .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 2.5rem 0 6rem; }
-    .tool-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem 1.75rem; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.2s, transform 0.2s, background 0.2s; display: block; opacity: 0; transform: translateY(16px); }
+    .tool-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem 1.75rem; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.2s, transform 0.2s, background 0.2s; display: flex; flex-direction: column; opacity: 0; transform: translateY(16px); }
     .tool-card.visible { opacity: 1; transform: translateY(0); }
     .tool-card:hover { border-color: var(--green); background: rgba(46,168,126,0.04); transform: translateY(-2px); }
     .tool-card.coming-soon { cursor: default; opacity: 0; transform: translateY(16px); }
     .tool-card.coming-soon.visible { opacity: 0.4; transform: translateY(0); }
     .tool-card.coming-soon:hover { border-color: var(--border); background: var(--navy-2); transform: none; }
-
-    .tool-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--navy-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; font-size: 20px; }
+    .tool-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--navy-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
     .tool-tag { font-size: 10px; font-weight: 500; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
     .tool-tag.soon { color: var(--text-3); }
     .tool-name { font-size: 18px; font-weight: 500; margin-bottom: 6px; font-family: 'Instrument Serif', serif; letter-spacing: -0.3px; }
-    .tool-desc { font-size: 13px; color: var(--text-2); font-weight: 300; line-height: 1.6; }
+    .tool-desc { font-size: 13px; color: var(--text-2); font-weight: 300; line-height: 1.6; flex: 1; }
     .tool-arrow { margin-top: 1.5rem; font-size: 13px; color: var(--green); font-weight: 500; display: flex; align-items: center; gap: 6px; }
     .tool-arrow svg { width: 14px; height: 14px; transition: transform 0.2s; }
     .tool-card:hover .tool-arrow svg { transform: translateX(4px); }
-
     footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: auto; }
     .footer-inner { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
-
-    @media (max-width: 600px) {
-      .tools { grid-template-columns: 1fr; }
-      .hero-tagline { font-size: 32px; }
-      .intro-tagline { font-size: 22px; padding: 0 2rem; }
-    }
+    @media (max-width: 600px) { .tools { grid-template-columns: 1fr; } .hero-tagline { font-size: 32px; } .intro-tagline, .intro-klearer { font-size: 22px; padding: 0 2rem; } }
   </style>
 </head>
 <body>
@@ -86,26 +66,27 @@
       <text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text>
     </svg>
   </div>
-  <div class="intro-tagline" id="intro-tagline">
-    Every career decision, made <em>klearer</em>
-  </div>
+  <div class="intro-tagline" id="intro-tagline">Every decision made</div>
+  <div class="intro-klearer" id="intro-klearer">klearer</div>
 </div>
 
 <div id="app">
   <nav>
-    <a class="logo" href="/">klear<em>er</em></a>
+    <a class="logo" href="/" onclick="sessionStorage.removeItem('klearer-intro')">klear<em>er</em></a>
     <span class="nav-right">AI career tools</span>
   </nav>
 
   <div class="container">
     <div class="hero">
-      <h1 class="hero-tagline">Every career decision,<br>made <em>klearer</em></h1>
+      <h1 class="hero-tagline">Every decision,<br>made <em>klearer</em></h1>
       <p class="hero-sub">AI-powered tools for the moments that matter most in your career.</p>
     </div>
 
     <div class="tools">
       <a href="/offer.html" class="tool-card" id="card-1">
-        <div class="tool-icon">📄</div>
+        <div class="tool-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
         <span class="tool-tag">Free</span>
         <div class="tool-name">Offer Analysis</div>
         <div class="tool-desc">Decode your offer letter — salary, benefits, equity, and the fine print — in plain English.</div>
@@ -113,25 +94,32 @@
       </a>
 
       <a href="/interview.html" class="tool-card" id="card-2">
-        <div class="tool-icon">🎯</div>
+        <div class="tool-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
         <span class="tool-tag">Free + $1.99</span>
         <div class="tool-name">Interview Prep</div>
         <div class="tool-desc">Get personalized interview questions based on the job description and live company research.</div>
         <div class="tool-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
       </a>
 
-      <div class="tool-card coming-soon" id="card-3">
-        <div class="tool-icon">💰</div>
-        <span class="tool-tag soon">Coming soon</span>
-        <div class="tool-name">Salary Negotiation</div>
-        <div class="tool-desc">Get a personalized script to negotiate your salary with confidence.</div>
-      </div>
+      <a href="/review.html" class="tool-card" id="card-3">
+        <div class="tool-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <span class="tool-tag">$4.99</span>
+        <div class="tool-name">Performance Review</div>
+        <div class="tool-desc">Paste your accomplishments and get a full self-evaluation, raise positioning, and promotion script.</div>
+        <div class="tool-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </a>
 
       <div class="tool-card coming-soon" id="card-4">
-        <div class="tool-icon">📊</div>
+        <div class="tool-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
         <span class="tool-tag soon">Coming soon</span>
         <div class="tool-name">Resume Analyzer</div>
-        <div class="tool-desc">Get brutally honest feedback on your resume and how to improve it.</div>
+        <div class="tool-desc">Get brutally honest feedback on your resume and what to fix to land more interviews.</div>
       </div>
     </div>
   </div>
@@ -149,7 +137,6 @@
 
 <script>
   const seen = sessionStorage.getItem('klearer-intro');
-
   if (seen) {
     document.getElementById('intro').style.display = 'none';
     document.getElementById('app').style.opacity = '1';
@@ -162,25 +149,24 @@
   function runIntro() {
     const logo = document.getElementById('intro-logo');
     const tagline = document.getElementById('intro-tagline');
+    const klearer = document.getElementById('intro-klearer');
     const intro = document.getElementById('intro');
     const app = document.getElementById('app');
     setTimeout(() => { logo.classList.add('show'); }, 300);
     setTimeout(() => { tagline.classList.add('show'); }, 800);
+    setTimeout(() => { klearer.style.opacity='1'; klearer.style.transform='translateY(0)'; }, 1600);
     setTimeout(() => {
       intro.classList.add('hide');
       app.classList.add('show');
-      setTimeout(() => { intro.style.display = 'none'; showCards(); }, 600);
-    }, 2400);
+      setTimeout(() => { intro.style.display='none'; showCards(); }, 600);
+    }, 3000);
   }
 
   function showCards() {
     ['card-1','card-2','card-3','card-4'].forEach((id, i) => {
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) {
-          el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s';
-          el.classList.add('visible');
-        }
+        if (el) { el.style.transition='opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s'; el.classList.add('visible'); }
       }, i * 120);
     });
   }
