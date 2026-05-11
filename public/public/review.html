@@ -138,4 +138,45 @@
     const msgs = ['Reading your accomplishments...','Identifying your strongest wins...','Writing your self-evaluation...','Almost done...'];
     let mi = 0;
     const msgEl = document.getElementById('loading-msg');
-    const msgInt = setInterval(()=>{ mi=(mi+1)%msgs.length
+    const msgInt = setInterval(()=>{ mi=(mi+1)%msgs.length; if(msgEl) msgEl.textContent=msgs[mi]; }, 1800);
+    try {
+      const res = await fetch('/api/review-free', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({role, wins}) });
+      const data = await res.json();
+      clearInterval(msgInt);
+      if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      currentData = { ...currentData, ...data };
+      renderResults(data);
+    } catch(err) { clearInterval(msgInt); show('input-view'); showError('Error: ' + err.message); }
+  }
+  function masterCopy(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy preview'; }, 2000);
+    });
+  }
+  function renderResults(data) {
+    const highlightsHtml = (data.highlights||[]).map(h=>`<div class="highlight-row"><div class="highlight-dot"></div><div class="highlight-text">${h}</div></div>`).join('');
+    const copyText = '★ Performance Review by Klearer — klearer.vercel.app\n\nPreview:\n\n'+(data.preview||'')+'\n\nKey highlights:\n'+(data.highlights||[]).map(h=>'• '+h).join('\n');
+    const kLogo = `<svg width="18" height="18" viewBox="0 0 100 100" style="flex-shrink:0"><circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#fff" stroke-width="3"/><text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#fff" text-anchor="middle">k</text></svg>`;
+    document.getElementById('results-content').innerHTML =
+      `<div class="results-header"><div class="results-title">Your review preview<span class="free-badge">Free</span></div><div class="results-sub">Here's a taste of what your full self-evaluation looks like</div></div>` +
+      `<button class="master-copy-btn" onclick="masterCopy(${JSON.stringify(copyText)}, this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy preview</button>` +
+      `<div class="section"><div class="section-title">Self-evaluation preview</div><div class="preview-text">${data.preview||''}</div></div>` +
+      `<div class="section"><div class="section-title">Your strongest highlights</div>${highlightsHtml}</div>` +
+      `<div class="paywall"><div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.25rem"><div style="height:1px;flex:1;background:rgba(46,168,126,0.15)"></div><span style="font-size:11px;color:var(--green);font-weight:500;text-transform:uppercase;letter-spacing:0.8px;">Full review — $4.99</span><div style="height:1px;flex:1;background:rgba(46,168,126,0.15)"></div></div><div class="paywall-title">Get your full review package</div><div class="paywall-sub">Everything you need to walk into your review with confidence and walk out with a raise.</div><div class="paywall-features"><div class="paywall-feature">Full self-evaluation ready to submit</div><div class="paywall-feature">Raise request script tailored to your wins</div><div class="paywall-feature">Promotion case if applicable</div><div class="paywall-feature">Gaps to address before your review</div><div class="paywall-feature">Copy everything in one click</div></div><button class="pay-btn" id="pay-btn" onclick="handlePayment()"><span style="display:flex;align-items:center;gap:10px;">${kLogo} Unlock full review package</span></button><div class="price-tag">$4.99 one-time · instant access</div></div>`;
+    show('results-view');
+  }
+  async function handlePayment() {
+    const btn = document.getElementById('pay-btn');
+    btn.disabled=true; btn.textContent='Loading...';
+    try {
+      const res = await fetch('/api/create-review-checkout', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({role:currentData.role, wins:currentData.wins}) });
+      const { url } = await res.json();
+      if (url) window.location.href = url;
+    } catch(err) { btn.disabled=false; btn.textContent='Unlock full review package'; alert('Payment failed. Please try again.'); }
+  }
+  function goBack() { document.getElementById('role-text').value=''; document.getElementById('wins-text').value=''; document.getElementById('results-content').innerHTML=''; currentData={}; show('input-view'); }
+</script>
+</body>
+</html>
