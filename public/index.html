@@ -4,27 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klearer — Understand your offer before you sign it</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #0D1117;
-      --navy-2: #161B22;
-      --navy-3: #21262D;
-      --navy-4: #30363D;
-      --green: #2EA87E;
-      --green-light: rgba(46,168,126,0.08);
-      --amber: #F0A500;
-      --amber-bg: rgba(240,165,0,0.1);
-      --red: #F85149;
-      --red-bg: rgba(248,81,73,0.1);
+      --navy: #0D1117; --navy-2: #161B22; --navy-3: #21262D; --navy-4: #30363D;
+      --green: #2EA87E; --green-light: rgba(46,168,126,0.08);
+      --amber: #F0A500; --amber-bg: rgba(240,165,0,0.1);
+      --red: #F85149; --red-bg: rgba(248,81,73,0.1);
       --blue: #58A6FF;
-      --text: #E6EDF3;
-      --text-2: #8B949E;
-      --text-3: #484F58;
-      --border: rgba(255,255,255,0.08);
-      --border-2: rgba(255,255,255,0.04);
+      --text: #E6EDF3; --text-2: #8B949E; --text-3: #484F58;
+      --border: rgba(255,255,255,0.08); --border-2: rgba(255,255,255,0.04);
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
@@ -83,7 +75,12 @@
     .stat-value { font-size: 20px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
     .stat-value.green { color: var(--green); }
     .card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
-    .card-title { font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1.25rem; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .card-title { font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; }
+    .copy-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-3); background: var(--navy-3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.15s, border-color 0.15s; }
+    .copy-btn:hover { color: var(--green); border-color: rgba(46,168,126,0.3); }
+    .copy-btn svg { width: 12px; height: 12px; }
+    .copy-btn.copied { color: var(--green); border-color: rgba(46,168,126,0.3); }
     .row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border-2); gap: 16px; }
     .row:last-child { border-bottom: none; padding-bottom: 0; }
     .row:first-child { padding-top: 0; }
@@ -104,6 +101,28 @@
     .flag-dot.info { background: var(--blue); box-shadow: 0 0 6px rgba(88,166,255,0.4); }
     .flag-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
     .flag-detail { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
+    .action-btn { padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--navy-2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color 0.2s, background 0.2s; text-align: left; }
+    .action-btn:hover { border-color: var(--green); background: var(--green-light); }
+    .action-btn-icon { font-size: 20px; margin-bottom: 8px; display: block; }
+    .action-btn-title { font-size: 14px; font-weight: 500; color: var(--text); display: block; margin-bottom: 3px; }
+    .action-btn-sub { font-size: 12px; color: var(--text-2); font-weight: 300; }
+    .feature-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .feature-loading { display: flex; align-items: center; gap: 10px; padding: 1rem 0; color: var(--text-2); font-size: 13px; font-weight: 300; }
+    .feature-loading-dots { display: flex; gap: 4px; }
+    .feature-loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: bounce 1.2s infinite; }
+    .feature-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .feature-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+    .benchmark-verdict { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+    .benchmark-range { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .benchmark-stat { background: var(--navy-3); border-radius: 10px; padding: 0.75rem 1rem; text-align: center; }
+    .benchmark-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .benchmark-stat-value { font-size: 16px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
+    .benchmark-stat-value.highlight { color: var(--green); }
+    .benchmark-tip { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; padding: 12px; background: var(--navy-3); border-radius: 10px; border-left: 2px solid var(--green); }
+    .benchmark-sources { font-size: 11px; color: var(--text-3); margin-top: 0.75rem; }
+    .negotiate-script { font-size: 14px; color: var(--text-2); line-height: 1.75; font-weight: 300; white-space: pre-wrap; background: var(--navy-3); border-radius: 10px; padding: 1.25rem; }
     #file-input { display: none; }
   </style>
 </head>
@@ -144,6 +163,7 @@
   </div>
 </div>
 <script>
+  let currentOffer = {};
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
   dropZone.addEventListener('click', () => fileInput.click());
@@ -158,14 +178,24 @@
   function show(id) { ['input-view','loading-view','results-view'].forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; }); }
   async function analyze(text) {
     document.getElementById('error-box').style.display = 'none';
+    currentOffer = { text };
     show('loading-view');
     try {
       const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      currentOffer = { ...currentOffer, ...data };
       renderResults(data);
     } catch (err) { show('input-view'); showError('Error: ' + err.message); }
   }
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied`;
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`; }, 2000);
+    });
+  }
+  function copyIcon() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`; }
   function badgeClass(b) { return ['good','warn','danger','neutral'].includes(b) ? b : 'neutral'; }
   function flagDot(type) { const cls = type === 'warn' ? 'warn' : type === 'good' ? 'good' : 'info'; return `<div class="flag-dot ${cls}"></div>`; }
   function renderResults(r) {
@@ -173,14 +203,82 @@
     const compHtml = (r.compensation||[]).map(c=>`<div class="row"><div><div class="row-label">${c.label}</div><div class="row-desc">${c.description}</div></div><div class="row-value">${c.value}</div></div>`).join('');
     const benefitsHtml = (r.benefits||[]).map(b=>`<div class="row"><div><div class="row-label">${b.label}</div><div class="row-desc">${b.description}</div></div><div><span class="badge ${badgeClass(b.badge)}">${b.badgeText||b.badge}</span></div></div>`).join('');
     const flagsHtml = (r.flags||[]).map(f=>`<div class="flag">${flagDot(f.type)}<div><div class="flag-title">${f.title}</div><div class="flag-detail">${f.detail}</div></div></div>`).join('');
+    const compText = (r.compensation||[]).map(c=>`${c.label}: ${c.value}\n${c.description}`).join('\n\n');
+    const benefitsText = (r.benefits||[]).map(b=>`${b.label} (${b.badgeText||b.badge}): ${b.description}`).join('\n\n');
+    const flagsText = (r.flags||[]).map(f=>`${f.title}: ${f.detail}`).join('\n\n');
     document.getElementById('results-content').innerHTML = `
-      <div class="summary-card"><div class="summary-header"><div><div class="summary-role">${r.role||'Your offer'}</div>${r.company?`<div class="summary-company">${r.company}</div>`:''}</div><div class="summary-badge">Analyzed</div></div><div class="stat-grid">${statsHtml}</div></div>
-      ${compHtml?`<div class="card"><div class="card-title">Compensation breakdown</div>${compHtml}</div>`:''}
-      ${benefitsHtml?`<div class="card"><div class="card-title">Benefits</div>${benefitsHtml}</div>`:''}
-      ${flagsHtml?`<div class="card"><div class="card-title">Things to know</div>${flagsHtml}</div>`:''}`;
+      <div class="summary-card">
+        <div class="summary-header">
+          <div><div class="summary-role">${r.role||'Your offer'}</div>${r.company?`<div class="summary-company">${r.company}</div>`:''}</div>
+          <div class="summary-badge">Analyzed</div>
+        </div>
+        <div class="stat-grid">${statsHtml}</div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn" onclick="loadBenchmark()">
+          <span class="action-btn-icon">📊</span>
+          <span class="action-btn-title">Salary benchmark</span>
+          <span class="action-btn-sub">How does this compare nationally?</span>
+        </button>
+        <button class="action-btn" onclick="loadNegotiate()">
+          <span class="action-btn-icon">💬</span>
+          <span class="action-btn-title">Negotiate this offer</span>
+          <span class="action-btn-sub">Get a personalized script</span>
+        </button>
+      </div>
+      <div id="benchmark-card" style="display:none;"></div>
+      <div id="negotiate-card" style="display:none;"></div>
+      ${compHtml?`<div class="card"><div class="card-header"><div class="card-title">Compensation breakdown</div><button class="copy-btn" onclick="copyText(${JSON.stringify(compText)}, this)">${copyIcon()} Copy</button></div>${compHtml}</div>`:''}
+      ${benefitsHtml?`<div class="card"><div class="card-header"><div class="card-title">Benefits</div><button class="copy-btn" onclick="copyText(${JSON.stringify(benefitsText)}, this)">${copyIcon()} Copy</button></div>${benefitsHtml}</div>`:''}
+      ${flagsHtml?`<div class="card"><div class="card-header"><div class="card-title">Things to know</div><button class="copy-btn" onclick="copyText(${JSON.stringify(flagsText)}, this)">${copyIcon()} Copy</button></div>${flagsHtml}</div>`:''}`;
     show('results-view');
   }
-  function goBack() { document.getElementById('offer-text').value=''; document.getElementById('results-content').innerHTML=''; show('input-view'); }
+  async function loadBenchmark() {
+    const card = document.getElementById('benchmark-card');
+    card.style.display = 'block';
+    card.innerHTML = `<div class="feature-card"><div class="feature-loading"><div class="feature-loading-dots"><span></span><span></span><span></span></div>Looking up national salary data...</div></div>`;
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const salary = (currentOffer.stats||[]).find(s=>s.label==='Base salary')?.value || '';
+    try {
+      const res = await fetch('/api/benchmark', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: currentOffer.role, salary }) });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error);
+      const verdictColor = d.verdict === 'above' ? 'var(--green)' : d.verdict === 'below' ? 'var(--red)' : 'var(--amber)';
+      const benchmarkText = `Salary Benchmark: ${d.role}\n\nNational range: ${d.range_low} – ${d.range_high}\nMedian: ${d.national_median}\nYour offer: ${salary||'not specified'}\n\n${d.verdict_text}\n\nTip: ${d.negotiation_tip}\n\n${d.sources}`;
+      card.innerHTML = `<div class="feature-card">
+        <div class="card-header"><div class="card-title">Salary benchmark — ${d.role}</div><button class="copy-btn" onclick="copyText(${JSON.stringify(benchmarkText)}, this)">${copyIcon()} Copy</button></div>
+        <div class="benchmark-verdict" style="color:${verdictColor}">${d.verdict_text}</div>
+        <div class="benchmark-range">
+          <div class="benchmark-stat"><div class="benchmark-stat-label">Low</div><div class="benchmark-stat-value">${d.range_low}</div></div>
+          <div class="benchmark-stat"><div class="benchmark-stat-label">Median</div><div class="benchmark-stat-value highlight">${d.national_median}</div></div>
+          <div class="benchmark-stat"><div class="benchmark-stat-label">High</div><div class="benchmark-stat-value">${d.range_high}</div></div>
+        </div>
+        <div class="benchmark-tip">${d.negotiation_tip}</div>
+        <div class="benchmark-sources">${d.sources}</div>
+      </div>`;
+    } catch(err) {
+      card.innerHTML = `<div class="feature-card"><div style="font-size:13px;color:var(--red)">Could not load benchmark data. Please try again.</div></div>`;
+    }
+  }
+  async function loadNegotiate() {
+    const card = document.getElementById('negotiate-card');
+    card.style.display = 'block';
+    card.innerHTML = `<div class="feature-card"><div class="feature-loading"><div class="feature-loading-dots"><span></span><span></span><span></span></div>Writing your negotiation script...</div></div>`;
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const salary = (currentOffer.stats||[]).find(s=>s.label==='Base salary')?.value || '';
+    try {
+      const res = await fetch('/api/negotiate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: currentOffer.role, company: currentOffer.company, salary, offerText: currentOffer.text }) });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error);
+      card.innerHTML = `<div class="feature-card">
+        <div class="card-header"><div class="card-title">Negotiation script</div><button class="copy-btn" onclick="copyText(${JSON.stringify(d.script)}, this)">${copyIcon()} Copy</button></div>
+        <div class="negotiate-script">${d.script.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      </div>`;
+    } catch(err) {
+      card.innerHTML = `<div class="feature-card"><div style="font-size:13px;color:var(--red)">Could not generate script. Please try again.</div></div>`;
+    }
+  }
+  function goBack() { document.getElementById('offer-text').value=''; document.getElementById('results-content').innerHTML=''; currentOffer={}; show('input-view'); }
 </script>
 </body>
 </html>
