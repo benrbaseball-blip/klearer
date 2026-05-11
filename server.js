@@ -92,7 +92,7 @@ app.post('/api/interview-free', async (req, res) => {
   if (!jd || jd.length < 50) return res.status(400).json({ error: 'Job description too short.' });
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
-  const prompt = `Analyze this job description and generate 5 interview questions. Return ONLY valid JSON:
+  const prompt = `Analyze this job description and generate exactly 3 interview questions. Return ONLY valid JSON:
 {
   "role": "job title",
   "company": "company name or Unknown",
@@ -100,7 +100,7 @@ app.post('/api/interview-free', async (req, res) => {
     { "question": "interview question", "tip": "what they are testing and how to answer well in 1-2 sentences" }
   ]
 }
-Make questions specific to the role requirements. Focus on behavioral and skills-based questions.
+Generate exactly 3 questions. Make them specific to the role requirements. Focus on behavioral and skills-based questions.
 Job description: ${jd.slice(0, 3000)}`;
   try {
     const raw = await callClaude(apiKey, prompt, 1000);
