@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klearer — Your Performance Review Package</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0D1117; --navy-2: #161B22; --navy-3: #21262D;
+      --green: #2EA87E; --green-light: rgba(46,168,126,0.08);
+      --red: #F85149; --amber: #F0A500;
+      --text: #E6EDF3; --text-2: #8B949E; --text-3: #484F58;
+      --border: rgba(255,255,255,0.08); --border-2: rgba(255,255,255,0.04);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
+    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
+    .logo em { font-style: italic; color: var(--green); }
+    .nav-back { font-size: 13px; color: var(--text-3); text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.15s; margin-left: auto; }
+    .nav-back:hover { color: var(--text-2); }
+    .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    .page { padding: 4rem 0 5rem; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    #loading-view { text-align: center; padding: 4rem 0; }
+    .loading-msg { font-size: 13px; color: var(--text-2); margin-bottom: 1.5rem; font-weight: 300; }
+    .progress-bar { width: 200px; height: 2px; background: var(--navy-3); border-radius: 2px; margin: 0 auto; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; animation: progress 5s ease-in-out forwards; }
+    @keyframes progress { 0% { width: 0%; } 70% { width: 75%; } 90% { width: 90%; } }
+    .results-header { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+    .results-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); opacity: 0.5; }
+    .results-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+    .results-sub { font-size: 13px; color: var(--text-2); font-weight: 300; }
+    .section { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .section-title { font-size: 12px; font-weight: 500; color: var(--text-3); letter-spacing: 0.3px; margin-bottom: 1.25rem; }
+    .body-text { font-size: 14px; color: var(--text-2); font-weight: 300; line-height: 1.8; white-space: pre-wrap; }
+    .highlight-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-2); }
+    .highlight-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .highlight-row:first-child { padding-top: 0; }
+    .highlight-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 6px; box-shadow: 0 0 6px rgba(46,168,126,0.4); }
+    .highlight-dot.warn { background: var(--amber); box-shadow: 0 0 6px rgba(240,165,0,0.4); }
+    .highlight-text { font-size: 14px; color: var(--text-2); font-weight: 300; line-height: 1.6; }
+    .master-copy-btn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.15s, border-color 0.15s, background 0.15s; margin-bottom: 1rem; }
+    .master-copy-btn:hover { color: var(--green); border-color: rgba(46,168,126,0.3); }
+    .master-copy-btn.copied { color: var(--green); border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.08); }
+    .master-copy-btn svg { width: 14px; height: 14px; }
+    footer { border-top: 1px solid var(--border); margin-top: 4rem; padding: 1.5rem 0; }
+    .footer-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">klear<em>er</em></a>
+  <a class="nav-back" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    All tools
+  </a>
+</nav>
+<div class="container">
+  <div class="page">
+    <div id="loading-view">
+      <p class="loading-msg" id="loading-msg">Building your review package...</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+    <div id="results-view" style="display:none;"></div>
+  </div>
+</div>
+<footer><div class="footer-inner"><div><svg width="24" height="24" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#2EA87E" stroke-width="3"/><text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text></svg></div><div class="footer-right">&copy; 2026 Klearer</div></div></footer>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get('role') || '';
+  const wins = params.get('wins') || '';
+  const msgs = ['Building your review package...','Writing your self-evaluation...','Crafting your raise script...','Almost ready...'];
+  let mi = 0;
+  const msgEl = document.getElementById('loading-msg');
+  const msgInt = setInterval(()=>{ mi=(mi+1)%msgs.length; if(msgEl) msgEl.textContent=msgs[mi]; }, 2000);
+  function masterCopy(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy all'; }, 2000);
+    });
+  }
+  async function loadPaidReview() {
+    try {
+      const res = await fetch('/api/review-paid', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ role, wins }) });
+      const data = await res.json();
+      clearInterval(msgInt);
+      if (!res.ok) throw new Error(data.error);
+      renderResults(data);
+    } catch(err) {
+      clearInterval(msgInt);
+      document.getElementById('loading-view').innerHTML = '<p style="color:var(--red);font-size:14px;">Something went wrong. <a href="/review.html" style="color:var(--green)">Try again</a></p>';
+    }
+  }
+  function renderResults(data) {
+    const gapsHtml = (data.gaps||[]).map(g=>`<div class="highlight-row"><div class="highlight-dot warn"></div><div class="highlight-text">${g}</div></div>`).join('');
+    const metricsHtml = (data.key_metrics||[]).map(m=>`<div class="highlight-row"><div class="highlight-dot"></div><div class="highlight-text">${m}</div></div>`).join('');
+    const fullText = '★ Performance Review by Klearer — klearer.vercel.app\n\n=== Self-Evaluation ===\n\n'+(data.self_evaluation||'')+'\n\n=== Raise Script ===\n\n'+(data.raise_script||'')+(data.promotion_case?'\n\n=== Promotion Case ===\n\n'+data.promotion_case:'')+'\n\n=== Areas to Address ===\n\n'+(data.gaps||[]).map(g=>'• '+g).join('\n');
+    document.getElementById('loading-view').style.display='none';
+    document.getElementById('results-view').style.display='block';
+    document.getElementById('results-view').innerHTML =
+      `<div class="results-header"><div class="results-title">Your performance review package</div><div class="results-sub">Ready to submit and use in your review conversation</div></div>` +
+      `<button class="master-copy-btn" onclick="masterCopy(${JSON.stringify(fullText)}, this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy all</button>` +
+      `<div class="section"><div class="section-title">Self-evaluation</div><div class="body-text">${data.self_evaluation||''}</div></div>` +
+      `<div class="section"><div class="section-title">Raise script</div><div class="body-text">${data.raise_script||''}</div></div>` +
+      (data.promotion_case?`<div class="section"><div class="section-title">Promotion case</div><div class="body-text">${data.promotion_case}</div></div>`:'') +
+      (metricsHtml?`<div class="section"><div class="section-title">Your strongest wins</div>${metricsHtml}</div>`:'') +
+      (gapsHtml?`<div class="section"><div class="section-title">Areas to address</div>${gapsHtml}</div>`:'');
+  }
+  loadPaidReview();
+</script>
+</body>
+</html>
