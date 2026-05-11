@@ -93,7 +93,7 @@
 <div class="container">
   <div id="input-view">
     <h1 class="headline">Ace your<br><em>interview.</em></h1>
-    <p class="subline">Paste the job description and get personalized interview questions — plus company-specific prep for $1.99.</p>
+    <p class="subline">Paste the job description and get 3 personalized interview questions — plus 15 company-specific questions for $1.99.</p>
     <textarea id="jd-text" placeholder="Paste the job description here...&#10;&#10;Include the role, responsibilities, requirements, and company name for best results."></textarea>
     <button class="btn-primary" onclick="startPrep()">Generate interview prep →</button>
     <div class="error" id="error-box"></div>
@@ -146,9 +146,9 @@
     const questionsHtml = (data.questions||[]).map((q,i) => `<div class="question"><div class="question-num">Question ${i+1}</div><div class="question-text">${q.question}</div><div class="question-tip">${q.tip}</div></div>`).join('');
     const freeText = '★ Interview Prep by Klearer — klearer.vercel.app\n\n'+currentRole+(currentCompany?' at '+currentCompany:'')+'\n\n=== Free Questions ===\n\n'+(data.questions||[]).map((q,i)=>`Q${i+1}: ${q.question}\nTip: ${q.tip}`).join('\n\n');
     document.getElementById('results-content').innerHTML =
-      `<div class="results-header"><div class="results-title">${currentRole}<span class="free-badge">Free</span></div><div class="results-sub">${currentCompany} · 5 questions to get you started</div></div>` +
+      `<div class="results-header"><div class="results-title">${currentRole}<span class="free-badge">Free</span></div><div class="results-sub">${currentCompany} · 3 questions to get you started</div></div>` +
       `<button class="master-copy-btn" onclick="masterCopy(${JSON.stringify(freeText)}, this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy these questions</button>` +
-      `<div class="section"><div class="section-title">5 questions for this role</div>${questionsHtml}</div>` +
+      `<div class="section"><div class="section-title">3 questions for this role</div>${questionsHtml}</div>` +
       `<div class="paywall"><div class="paywall-icon">🎯</div><div class="paywall-title">Get the full prep sheet</div><div class="paywall-sub">15 company-specific questions based on live research into ${currentCompany} — their culture, recent news, and what they actually care about.</div><div class="paywall-features"><div class="paywall-feature">15 questions specific to ${currentCompany}</div><div class="paywall-feature">Tips on what each question is really testing</div><div class="paywall-feature">Based on live company research</div><div class="paywall-feature">Copy everything in one click</div></div><button class="pay-btn" id="pay-btn" onclick="handlePayment()">Unlock full prep sheet</button><div class="price-tag">$1.99 one-time · instant access</div></div>`;
     show('results-view');
   }
