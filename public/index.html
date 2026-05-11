@@ -24,16 +24,11 @@
     .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
     .logo em { font-style: italic; color: var(--green); }
     .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
-    #input-view { padding: 5rem 0 4rem; animation: fadeUp 0.5s ease both; }
+    #input-view { padding: 4rem 0 3rem; animation: fadeUp 0.5s ease both; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    .headline { font-family: 'Instrument Serif', serif; font-size: 52px; font-weight: 400; line-height: 1.1; letter-spacing: -1px; margin-bottom: 1.25rem; }
+    .headline { font-family: 'Instrument Serif', serif; font-size: 56px; font-weight: 400; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 1.25rem; }
     .headline em { font-style: italic; color: var(--green); }
     .subline { font-size: 16px; color: var(--text-2); margin-bottom: 2.5rem; max-width: 460px; line-height: 1.7; font-weight: 300; }
-    .how-it-works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 2.5rem; }
-    .how-step { background: var(--navy-2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
-    .how-step-num { font-size: 11px; font-weight: 500; color: var(--green); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
-    .how-step-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-    .how-step-sub { font-size: 12px; color: var(--text-2); font-weight: 300; line-height: 1.5; }
     .drop-zone { border: 1px solid var(--border); border-radius: 16px; padding: 3.5rem 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s; background: var(--green-light); position: relative; overflow: hidden; }
     .drop-zone::before { content: ''; position: absolute; inset: 0; background: var(--green-light); opacity: 0; transition: opacity 0.2s; }
     .drop-zone:hover, .drop-zone.drag { border-color: var(--green); transform: translateY(-1px); }
@@ -143,8 +138,7 @@
     .footer-left { font-size: 12px; color: var(--text-3); font-weight: 300; }
     .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
     @media (max-width: 600px) {
-      .headline { font-size: 36px; }
-      .how-it-works { grid-template-columns: 1fr; }
+      .headline { font-size: 38px; }
       .action-row { grid-template-columns: 1fr; }
       .email-capture { flex-direction: column; align-items: flex-start; }
       .email-input { width: 100%; }
@@ -154,17 +148,12 @@
   </style>
 </head>
 <body>
-<nav><a class="logo" href="/">klear<em>er</em></a></nav>
+<nav><a class="logo" href="/">klear<em>er</em></a><span style="margin-left:auto;font-size:12px;color:var(--text-3);font-weight:300;">AI career tools</span></nav>
 <input type="file" id="file-input" accept=".txt,.doc,.docx,.pdf">
 <div class="container">
   <div id="input-view">
-    <h1 class="headline">Understand your offer<br>before you <em>sign it.</em></h1>
-    <p class="subline">Drop your offer letter and we'll break down every line — salary, benefits, equity, and the fine print — in plain English.</p>
-    <div class="how-it-works">
-      <div class="how-step"><div class="how-step-num">Step 1</div><div class="how-step-title">Drop your offer</div><div class="how-step-sub">Paste or upload your offer letter</div></div>
-      <div class="how-step"><div class="how-step-num">Step 2</div><div class="how-step-title">Get the breakdown</div><div class="how-step-sub">Salary, benefits, and fine print decoded</div></div>
-      <div class="how-step"><div class="how-step-num">Step 3</div><div class="how-step-title">Negotiate with confidence</div><div class="how-step-sub">Script and benchmark included</div></div>
-    </div>
+    <h1 class="headline">Your offer letter,<br><em>decoded.</em></h1>
+    <p class="subline">Paste your offer and get an instant breakdown of salary, benefits, and the fine print — plus a negotiation script and salary benchmark.</p>
     <div class="drop-zone" id="drop-zone">
       <div class="drop-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V8m0 0l-3 3m3-3l3 3M6 20h12a2 2 0 002-2V8l-6-6H6a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -187,7 +176,7 @@
   </div>
   <div id="loading-view">
     <p class="loading-msg" id="loading-msg">Reading your offer letter...</p>
-    <div class="progress-bar"><div class="progress-fill"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
   <div id="results-view">
     <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Analyze another offer</button>
@@ -213,6 +202,8 @@
     document.getElementById('error-box').style.display = 'none';
     currentOffer = { text };
     show('loading-view');
+    const pf = document.getElementById('progress-fill');
+    if (pf) { pf.style.animation = 'none'; pf.offsetHeight; pf.style.animation = ''; }
     const msgs = ['Reading your offer letter...','Checking compensation...','Reviewing benefits...','Flagging fine print...','Almost done...'];
     let mi = 0;
     const msgEl = document.getElementById('loading-msg');
@@ -257,12 +248,24 @@
       (flagsHtml?'<div class="card"><div class="card-title">Things to know</div>'+flagsHtml+'</div>':'');
     show('results-view');
   }
-  function submitEmail() {
+  async function submitEmail() {
     const email = document.getElementById('email-input').value.trim();
     if (!email || !email.includes('@')) return;
-    document.getElementById('email-form').style.display = 'none';
-    document.getElementById('email-sent').style.display = 'block';
-    console.log('Email captured:', email, currentOffer.role, currentOffer.company);
+    const btn = document.querySelector('.email-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      await fetch('https://formspree.io/f/mgodrbov', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email, role: currentOffer.role || '', company: currentOffer.company || '' })
+      });
+      document.getElementById('email-form').style.display = 'none';
+      document.getElementById('email-sent').style.display = 'block';
+    } catch(err) {
+      btn.textContent = 'Send';
+      btn.disabled = false;
+    }
   }
   async function loadBenchmark() {
     const card = document.getElementById('benchmark-card');
