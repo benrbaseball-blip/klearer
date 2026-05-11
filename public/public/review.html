@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klearer — Performance Review Prep</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0D1117; --navy-2: #161B22; --navy-3: #21262D;
+      --green: #2EA87E; --green-light: rgba(46,168,126,0.08);
+      --amber: #F0A500; --amber-bg: rgba(240,165,0,0.1);
+      --red: #F85149; --red-bg: rgba(248,81,73,0.1);
+      --blue: #58A6FF;
+      --text: #E6EDF3; --text-2: #8B949E; --text-3: #484F58;
+      --border: rgba(255,255,255,0.08); --border-2: rgba(255,255,255,0.04);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
+    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
+    .logo em { font-style: italic; color: var(--green); }
+    .nav-back { font-size: 13px; color: var(--text-3); text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.15s; margin-left: auto; }
+    .nav-back:hover { color: var(--text-2); }
+    .nav-back svg { width: 14px; height: 14px; }
+    .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    #input-view { padding: 4rem 0 3rem; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .headline { font-family: 'Instrument Serif', serif; font-size: 56px; font-weight: 400; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 1.25rem; }
+    .headline em { font-style: italic; color: var(--green); }
+    .subline { font-size: 16px; color: var(--text-2); margin-bottom: 2.5rem; max-width: 460px; line-height: 1.7; font-weight: 300; }
+    .input-label { font-size: 12px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: block; }
+    textarea { width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--navy-2); line-height: 1.6; outline: none; transition: border-color 0.15s; font-weight: 300; }
+    textarea:focus { border-color: var(--green); }
+    textarea::placeholder { color: var(--text-3); }
+    .input-group { margin-bottom: 1rem; }
+    .btn-primary { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.75rem; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; }
+    .btn-primary:hover { background: #35c494; box-shadow: 0 0 20px rgba(46,168,126,0.3); }
+    .btn-primary:active { transform: scale(0.99); }
+    .error { background: var(--red-bg); border: 1px solid rgba(248,81,73,0.2); border-radius: 10px; padding: 0.875rem 1.1rem; font-size: 13px; color: var(--red); margin-top: 1rem; display: none; }
+    #loading-view { display: none; padding: 6rem 0; text-align: center; }
+    .loading-msg { font-size: 13px; color: var(--text-2); margin-bottom: 1.5rem; font-weight: 300; min-height: 20px; }
+    .progress-bar { width: 200px; height: 2px; background: var(--navy-3); border-radius: 2px; margin: 0 auto; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; animation: progress 4s ease-in-out forwards; }
+    @keyframes progress { 0% { width: 0%; } 60% { width: 65%; } 90% { width: 85%; } }
+    #results-view { display: none; padding: 2.5rem 0 5rem; animation: fadeUp 0.5s ease both; }
+    .back-btn { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-3); cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; padding: 0; transition: color 0.15s; }
+    .back-btn:hover { color: var(--text-2); }
+    .results-header { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+    .results-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); opacity: 0.5; }
+    .results-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+    .results-sub { font-size: 13px; color: var(--text-2); font-weight: 300; }
+    .free-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; background: var(--green-light); color: var(--green); border: 1px solid rgba(46,168,126,0.2); border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+    .section { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .section-title { font-size: 12px; font-weight: 500; color: var(--text-3); letter-spacing: 0.3px; margin-bottom: 1.25rem; }
+    .preview-text { font-size: 14px; color: var(--text-2); font-weight: 300; line-height: 1.8; white-space: pre-wrap; }
+    .highlight-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-2); }
+    .highlight-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .highlight-row:first-child { padding-top: 0; }
+    .highlight-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 6px; box-shadow: 0 0 6px rgba(46,168,126,0.4); }
+    .highlight-text { font-size: 14px; color: var(--text-2); font-weight: 300; line-height: 1.6; }
+    .paywall { background: var(--navy-2); border: 1px solid rgba(46,168,126,0.2); border-radius: 16px; padding: 1.75rem; margin-bottom: 0.75rem; text-align: center; }
+    .paywall-title { font-size: 24px; font-weight: 400; font-family: 'Instrument Serif', serif; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    .paywall-sub { font-size: 14px; color: var(--text-2); font-weight: 300; margin-bottom: 1.5rem; line-height: 1.6; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .paywall-features { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
+    .paywall-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); font-weight: 300; }
+    .paywall-feature::before { content: '✓'; color: var(--green); font-weight: 500; flex-shrink: 0; }
+    .pay-btn { background: var(--green); color: #fff; border: none; border-radius: 10px; padding: 14px 32px; font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; display: inline-flex; align-items: center; gap: 10px; }
+    .pay-btn:hover { background: #35c494; box-shadow: 0 0 20px rgba(46,168,126,0.3); }
+    .pay-btn:active { transform: scale(0.99); }
+    .pay-btn:disabled { background: var(--navy-3); color: var(--text-3); cursor: not-allowed; box-shadow: none; }
+    .price-tag { font-size: 13px; color: var(--text-3); margin-top: 8px; }
+    .master-copy-btn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.15s, border-color 0.15s, background 0.15s; margin-bottom: 1rem; }
+    .master-copy-btn:hover { color: var(--green); border-color: rgba(46,168,126,0.3); }
+    .master-copy-btn.copied { color: var(--green); border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.08); }
+    .master-copy-btn svg { width: 14px; height: 14px; }
+    footer { border-top: 1px solid var(--border); margin-top: 4rem; padding: 1.5rem 0; }
+    .footer-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
+    @media (max-width: 600px) { .headline { font-size: 38px; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">klear<em>er</em></a>
+  <a class="nav-back" href="/" onclick="goHome(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    All tools
+  </a>
+</nav>
+<div class="container">
+  <div id="input-view">
+    <h1 class="headline">Own your<br><em>review.</em></h1>
+    <p class="subline">Paste your role and accomplishments — we'll write your self-evaluation and build your case for a raise or promotion.</p>
+    <div class="input-group">
+      <label class="input-label">Your role & responsibilities</label>
+      <textarea id="role-text" style="min-height:100px;" placeholder="e.g. Software Engineer at Acme Corp. I'm responsible for building and maintaining our customer-facing API, leading code reviews, and mentoring two junior engineers."></textarea>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Your accomplishments this period</label>
+      <textarea id="wins-text" style="min-height:140px;" placeholder="List your wins, projects, impact, metrics — anything you've done. Don't worry about formatting, just brain dump it all here.&#10;&#10;e.g. Reduced API response time by 40%, shipped the new checkout flow, onboarded 2 new engineers..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="startReview()">Generate my review prep →</button>
+    <div class="error" id="error-box"></div>
+  </div>
+  <div id="loading-view">
+    <p class="loading-msg" id="loading-msg">Reading your accomplishments...</p>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <div id="results-view">
+    <button class="back-btn" onclick="goBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Start over
+    </button>
+    <div id="results-content"></div>
+  </div>
+</div>
+<footer><div class="footer-inner"><div><svg width="24" height="24" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#2EA87E" stroke-width="3"/><text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text></svg></div><div class="footer-right">&copy; 2026 Klearer</div></div></footer>
+<script>
+  let currentData = {};
+  function showError(msg) { const el = document.getElementById('error-box'); el.textContent = msg; el.style.display = 'block'; }
+  function show(id) { ['input-view','loading-view','results-view'].forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; }); }
+  function goHome(e) { e.preventDefault(); document.body.style.opacity='0'; document.body.style.transition='opacity 0.4s ease'; setTimeout(()=>{ window.location.href='/'; },400); }
+  async function startReview() {
+    const role = document.getElementById('role-text').value.trim();
+    const wins = document.getElementById('wins-text').value.trim();
+    if (!role || role.length < 20) { showError('Please describe your role first.'); return; }
+    if (!wins || wins.length < 20) { showError('Please add your accomplishments.'); return; }
+    currentData = { role, wins };
+    document.getElementById('error-box').style.display = 'none';
+    show('loading-view');
+    const pf = document.getElementById('progress-fill');
+    if (pf) { pf.style.animation='none'; pf.offsetHeight; pf.style.animation=''; }
+    const msgs = ['Reading your accomplishments...','Identifying your strongest wins...','Writing your self-evaluation...','Almost done...'];
+    let mi = 0;
+    const msgEl = document.getElementById('loading-msg');
+    const msgInt = setInterval(()=>{ mi=(mi+1)%msgs.length
