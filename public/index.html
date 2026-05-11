@@ -5,352 +5,182 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klearer — Understand your offer before you sign it</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --green: #1D9E75;
-      --green-dark: #0F6E56;
-      --green-light: #E1F5EE;
-      --amber-bg: #FAEEDA;
-      --amber-text: #854F0B;
-      --red-bg: #FCEBEB;
-      --red-text: #A32D2D;
-      --gray-bg: #F5F5F3;
-      --gray-text: #888780;
-      --border: #E5E5E2;
-      --text: #1a1a18;
-      --muted: #6b6b68;
-      --subtle: #9b9b97;
+      --navy: #0D1117;
+      --navy-2: #161B22;
+      --navy-3: #21262D;
+      --navy-4: #30363D;
+      --green: #2EA87E;
+      --green-light: rgba(46,168,126,0.08);
+      --amber: #F0A500;
+      --amber-bg: rgba(240,165,0,0.1);
+      --red: #F85149;
+      --red-bg: rgba(248,81,73,0.1);
+      --blue: #58A6FF;
+      --text: #E6EDF3;
+      --text-2: #8B949E;
+      --text-3: #484F58;
+      --border: rgba(255,255,255,0.08);
+      --border-2: rgba(255,255,255,0.04);
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: #FAFAF8;
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    nav {
-      padding: 1.25rem 2rem;
-      border-bottom: 1px solid var(--border);
-      background: #FAFAF8;
-    }
-
-    .logo { font-size: 20px; font-weight: 500; color: var(--text); text-decoration: none; }
-    .logo span { color: var(--green); }
-
-    .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; }
-
-    /* INPUT VIEW */
-    #input-view { padding: 4rem 0 3rem; }
-    .headline { font-size: 36px; font-weight: 500; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 0.75rem; }
-    .subline { font-size: 16px; color: var(--muted); margin-bottom: 2.5rem; max-width: 480px; }
-
-    .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 16px;
-      padding: 3.5rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      background: white;
-    }
-    .drop-zone:hover, .drop-zone.drag {
-      border-color: var(--green);
-      background: var(--green-light);
-    }
-    .drop-icon { font-size: 40px; margin-bottom: 1rem; display: block; }
-    .drop-title { font-size: 16px; font-weight: 500; margin-bottom: 0.25rem; }
-    .drop-sub { font-size: 13px; color: var(--muted); }
-
+    body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
+    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
+    .logo em { font-style: italic; color: var(--green); }
+    .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    #input-view { padding: 5rem 0 4rem; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .headline { font-family: 'Instrument Serif', serif; font-size: 52px; font-weight: 400; line-height: 1.1; letter-spacing: -1px; margin-bottom: 1.25rem; }
+    .headline em { font-style: italic; color: var(--green); }
+    .subline { font-size: 16px; color: var(--text-2); margin-bottom: 3rem; max-width: 460px; line-height: 1.7; font-weight: 300; }
+    .drop-zone { border: 1px solid var(--border); border-radius: 16px; padding: 3.5rem 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s; background: var(--green-light); position: relative; overflow: hidden; }
+    .drop-zone::before { content: ''; position: absolute; inset: 0; background: var(--green-light); opacity: 0; transition: opacity 0.2s; }
+    .drop-zone:hover, .drop-zone.drag { border-color: var(--green); transform: translateY(-1px); }
+    .drop-zone:hover::before, .drop-zone.drag::before { opacity: 1; }
+    .drop-icon { width: 52px; height: 52px; margin: 0 auto 1.25rem; background: var(--navy-3); border: 1px solid var(--border); border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+    .drop-icon svg { width: 22px; height: 22px; stroke: var(--green); }
+    .drop-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 0.35rem; position: relative; z-index: 1; }
+    .drop-sub { font-size: 13px; color: var(--text-2); position: relative; z-index: 1; }
     .divider { display: flex; align-items: center; gap: 12px; margin: 1.5rem 0; }
     .divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
-    .divider span { font-size: 13px; color: var(--subtle); }
-
+    .divider span { font-size: 12px; color: var(--text-3); }
     .paste-area { display: none; }
-    .paste-area.open { display: block; }
-
-    textarea {
-      width: 100%;
-      min-height: 160px;
-      resize: vertical;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      background: white;
-      line-height: 1.6;
-      outline: none;
-      transition: border-color 0.15s;
-    }
+    .paste-area.open { display: block; animation: fadeUp 0.3s ease both; }
+    textarea { width: 100%; min-height: 160px; resize: vertical; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--navy-2); line-height: 1.6; outline: none; transition: border-color 0.15s; font-weight: 300; }
     textarea:focus { border-color: var(--green); }
-    textarea::placeholder { color: var(--subtle); }
-
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--green);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      margin-top: 0.75rem;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-primary:hover { background: var(--green-dark); }
+    textarea::placeholder { color: var(--text-3); }
+    .btn-primary { width: 100%; padding: 14px; background: var(--green); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.75rem; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; }
+    .btn-primary:hover { background: #35c494; box-shadow: 0 0 20px rgba(46,168,126,0.3); }
     .btn-primary:active { transform: scale(0.99); }
-
-    .btn-secondary {
-      width: 100%;
-      padding: 12px;
-      background: white;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .btn-secondary:hover { background: var(--gray-bg); }
-
-    .trust-row { display: flex; gap: 24px; margin-top: 1.5rem; justify-content: center; }
-    .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--subtle); }
-    .trust-item svg { width: 14px; height: 14px; opacity: 0.6; }
-
-    .error { background: var(--red-bg); border: 1px solid #F09595; border-radius: 10px; padding: 1rem 1.25rem; font-size: 14px; color: var(--red-text); margin-top: 1rem; display: none; line-height: 1.5; }
-
-    /* LOADING */
-    #loading-view { display: none; padding: 5rem 0; text-align: center; }
-    .dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 1.25rem; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: pulse 1.2s infinite; }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pulse { 0%,80%,100% { transform: scale(0.55); opacity: 0.35; } 40% { transform: scale(1); opacity: 1; } }
-    #loading-view p { font-size: 15px; color: var(--muted); }
-
-    /* RESULTS */
-    #results-view { display: none; padding: 2rem 0 4rem; }
-    .back-btn { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; padding: 0; transition: color 0.15s; }
-    .back-btn:hover { color: var(--text); }
-
-    .summary-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
-    .summary-card h2 { font-size: 17px; font-weight: 500; margin-bottom: 1.25rem; }
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .stat { background: var(--gray-bg); border-radius: 10px; padding: 1rem 1.1rem; }
-    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .stat-value { font-size: 22px; font-weight: 500; }
+    .btn-secondary { width: 100%; padding: 12px; background: var(--green-light); color: var(--text-2); border: 1px solid rgba(46,168,126,0.2); border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .btn-secondary:hover { background: var(--navy-2); color: var(--text); }
+    .trust-row { display: flex; gap: 24px; margin-top: 1.75rem; justify-content: center; }
+    .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-3); font-weight: 300; }
+    .trust-item svg { width: 13px; height: 13px; opacity: 0.5; }
+    .error { background: var(--red-bg); border: 1px solid rgba(248,81,73,0.2); border-radius: 10px; padding: 0.875rem 1.1rem; font-size: 13px; color: var(--red); margin-top: 1rem; display: none; }
+    #loading-view { display: none; padding: 6rem 0; text-align: center; animation: fadeUp 0.4s ease both; }
+    .loading-label { font-size: 13px; color: var(--text-2); margin-bottom: 1.5rem; font-weight: 300; }
+    .progress-bar { width: 200px; height: 2px; background: var(--navy-3); border-radius: 2px; margin: 0 auto; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; animation: progress 3s ease-in-out forwards; }
+    @keyframes progress { 0% { width: 0%; } 60% { width: 70%; } 90% { width: 88%; } }
+    #results-view { display: none; padding: 2.5rem 0 5rem; animation: fadeUp 0.5s ease both; }
+    .back-btn { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-3); cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 2.5rem; padding: 0; transition: color 0.15s; font-weight: 300; }
+    .back-btn:hover { color: var(--text-2); }
+    .back-btn svg { width: 14px; height: 14px; }
+    .summary-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+    .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); opacity: 0.5; }
+    .summary-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; }
+    .summary-role { font-size: 18px; font-weight: 500; color: var(--text); line-height: 1.3; }
+    .summary-company { font-size: 13px; color: var(--text-2); margin-top: 3px; font-weight: 300; }
+    .summary-badge { flex-shrink: 0; font-size: 11px; font-weight: 500; padding: 4px 10px; background: var(--green-light); color: var(--green); border: 1px solid rgba(46,168,126,0.2); border-radius: 20px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat { background: var(--navy-3); border-radius: 12px; padding: 1rem 1.1rem; border: 1px solid var(--border-2); }
+    .stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+    .stat-value { font-size: 20px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
     .stat-value.green { color: var(--green); }
-
-    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
-    .card-title { font-size: 11px; font-weight: 500; color: var(--subtle); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 1.1rem; }
-
-    .row { display: flex; justify-content: space-between; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+    .card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .card-title { font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1.25rem; }
+    .row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border-2); gap: 16px; }
     .row:last-child { border-bottom: none; padding-bottom: 0; }
-    .row-label { font-size: 14px; font-weight: 500; }
-    .row-desc { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; max-width: 360px; }
-    .row-value { font-size: 14px; font-weight: 500; text-align: right; white-space: nowrap; flex-shrink: 0; }
-
+    .row:first-child { padding-top: 0; }
+    .row-label { font-size: 14px; font-weight: 500; color: var(--text); }
+    .row-desc { font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.55; max-width: 360px; font-weight: 300; }
+    .row-value { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; white-space: nowrap; flex-shrink: 0; }
     .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
-    .badge.good { background: var(--green-light); color: var(--green-dark); }
-    .badge.warn { background: var(--amber-bg); color: var(--amber-text); }
-    .badge.danger { background: var(--red-bg); color: var(--red-text); }
-    .badge.neutral { background: var(--gray-bg); color: var(--muted); }
-
-    .flag { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .flag:last-child { border-bottom: none; }
-    .flag-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
-    .flag-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
-    .flag-detail { font-size: 13px; color: var(--muted); line-height: 1.55; }
-
+    .badge.good { background: rgba(46,168,126,0.12); color: var(--green); border: 1px solid rgba(46,168,126,0.2); }
+    .badge.warn { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(240,165,0,0.2); }
+    .badge.danger { background: var(--red-bg); color: var(--red); border: 1px solid rgba(248,81,73,0.2); }
+    .badge.neutral { background: var(--navy-3); color: var(--text-2); border: 1px solid var(--border); }
+    .flag { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border-2); }
+    .flag:last-child { border-bottom: none; padding-bottom: 0; }
+    .flag:first-child { padding-top: 0; }
+    .flag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .flag-dot.warn { background: var(--amber); box-shadow: 0 0 6px rgba(240,165,0,0.4); }
+    .flag-dot.good { background: var(--green); box-shadow: 0 0 6px rgba(46,168,126,0.4); }
+    .flag-dot.info { background: var(--blue); box-shadow: 0 0 6px rgba(88,166,255,0.4); }
+    .flag-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .flag-detail { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; }
     #file-input { display: none; }
   </style>
 </head>
 <body>
-
-<nav>
-  <a class="logo" href="/">klear<span>er</span></a>
-</nav>
-
+<nav><a class="logo" href="/">klear<em>er</em></a></nav>
 <input type="file" id="file-input" accept=".txt,.doc,.docx,.pdf">
-
 <div class="container">
-
-  <!-- INPUT -->
   <div id="input-view">
-    <h1 class="headline">Understand your offer<br>before you sign it.</h1>
-    <p class="subline">Drop your offer letter and we'll instantly break down salary, benefits, equity, and the fine print — in plain English.</p>
-
+    <h1 class="headline">Understand your offer<br>before you <em>sign it.</em></h1>
+    <p class="subline">Drop your offer letter and we'll break down every line — salary, benefits, equity, and the fine print — in plain English.</p>
     <div class="drop-zone" id="drop-zone">
-      <span class="drop-icon">📄</span>
-      <p class="drop-title">Drop your offer letter here</p>
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V8m0 0l-3 3m3-3l3 3M6 20h12a2 2 0 002-2V8l-6-6H6a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+      </div>
+      <p class="drop-title">Drop your offer letter</p>
       <p class="drop-sub">Click to browse · PDF, Word, or text file</p>
     </div>
-
     <div class="divider"><hr><span>or paste the text</span><hr></div>
-
     <div class="paste-area" id="paste-area">
-      <textarea id="offer-text" placeholder="Paste your offer letter text here...&#10;&#10;e.g. 'We are pleased to offer you the position of...'"></textarea>
+      <textarea id="offer-text" placeholder="Paste your offer letter text here..."></textarea>
       <button class="btn-primary" onclick="analyzeText()">Analyze my offer →</button>
     </div>
-
     <button class="btn-secondary" id="toggle-btn" onclick="togglePaste()">Paste text instead</button>
-
     <div class="error" id="error-box"></div>
-
     <div class="trust-row">
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Private & secure
-      </div>
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-        Not stored
-      </div>
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Results in seconds
-      </div>
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private & secure</div>
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Not stored</div>
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Results in seconds</div>
     </div>
   </div>
-
-  <!-- LOADING -->
   <div id="loading-view">
-    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <p>Analyzing your offer...</p>
+    <p class="loading-label">Analyzing your offer letter...</p>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
   </div>
-
-  <!-- RESULTS -->
   <div id="results-view">
-    <button class="back-btn" onclick="goBack()">← Analyze another offer</button>
+    <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Analyze another offer</button>
     <div id="results-content"></div>
   </div>
-
 </div>
-
 <script>
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
-
   dropZone.addEventListener('click', () => fileInput.click());
   dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
   dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault(); dropZone.classList.remove('drag');
-    const file = e.dataTransfer.files[0];
-    if (file) readAndAnalyze(file);
-  });
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); const file = e.dataTransfer.files[0]; if (file) readAndAnalyze(file); });
   fileInput.addEventListener('change', e => { if (e.target.files[0]) readAndAnalyze(e.target.files[0]); });
-
-  function readAndAnalyze(file) {
-    const reader = new FileReader();
-    reader.onload = e => analyze(e.target.result);
-    reader.onerror = () => showError('Could not read the file. Try pasting the text instead.');
-    reader.readAsText(file);
-  }
-
-  function togglePaste() {
-    const area = document.getElementById('paste-area');
-    const btn = document.getElementById('toggle-btn');
-    const open = area.classList.toggle('open');
-    btn.textContent = open ? 'Hide paste area' : 'Paste text instead';
-  }
-
-  function analyzeText() {
-    const text = document.getElementById('offer-text').value.trim();
-    if (!text || text.length < 50) { showError('Please paste your full offer letter text first.'); return; }
-    analyze(text);
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('error-box');
-    el.textContent = msg; el.style.display = 'block';
-  }
-
-  function show(id) {
-    ['input-view','loading-view','results-view'].forEach(v => {
-      document.getElementById(v).style.display = v === id ? 'block' : 'none';
-    });
-  }
-
+  function readAndAnalyze(file) { const reader = new FileReader(); reader.onload = e => analyze(e.target.result); reader.onerror = () => showError('Could not read the file. Try pasting the text instead.'); reader.readAsText(file); }
+  function togglePaste() { const area = document.getElementById('paste-area'); const btn = document.getElementById('toggle-btn'); const open = area.classList.toggle('open'); btn.textContent = open ? 'Hide paste area' : 'Paste text instead'; }
+  function analyzeText() { const text = document.getElementById('offer-text').value.trim(); if (!text || text.length < 50) { showError('Please paste your full offer letter text first.'); return; } analyze(text); }
+  function showError(msg) { const el = document.getElementById('error-box'); el.textContent = msg; el.style.display = 'block'; }
+  function show(id) { ['input-view','loading-view','results-view'].forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; }); }
   async function analyze(text) {
     document.getElementById('error-box').style.display = 'none';
     show('loading-view');
-
     try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
+      const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       renderResults(data);
-    } catch (err) {
-      show('input-view');
-      showError('Error: ' + err.message);
-    }
+    } catch (err) { show('input-view'); showError('Error: ' + err.message); }
   }
-
   function badgeClass(b) { return ['good','warn','danger','neutral'].includes(b) ? b : 'neutral'; }
-
-  function flagIcon(type) {
-    if (type === 'warn') return `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" stroke="#BA7517" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
-    if (type === 'good') return `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
-    return `<svg class="flag-icon" viewBox="0 0 24 24" fill="none" stroke="#378ADD" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-  }
-
+  function flagDot(type) { const cls = type === 'warn' ? 'warn' : type === 'good' ? 'good' : 'info'; return `<div class="flag-dot ${cls}"></div>`; }
   function renderResults(r) {
-    const statsHtml = (r.stats || []).map(s => `
-      <div class="stat">
-        <div class="stat-label">${s.label}</div>
-        <div class="stat-value${s.highlight ? ' green' : ''}">${s.value}</div>
-      </div>`).join('');
-
-    const compHtml = (r.compensation || []).map(c => `
-      <div class="row">
-        <div><div class="row-label">${c.label}</div><div class="row-desc">${c.description}</div></div>
-        <div class="row-value">${c.value}</div>
-      </div>`).join('');
-
-    const benefitsHtml = (r.benefits || []).map(b => `
-      <div class="row">
-        <div><div class="row-label">${b.label}</div><div class="row-desc">${b.description}</div></div>
-        <div><span class="badge ${badgeClass(b.badge)}">${b.badgeText || b.badge}</span></div>
-      </div>`).join('');
-
-    const flagsHtml = (r.flags || []).map(f => `
-      <div class="flag">
-        ${flagIcon(f.type)}
-        <div><div class="flag-title">${f.title}</div><div class="flag-detail">${f.detail}</div></div>
-      </div>`).join('');
-
+    const statsHtml = (r.stats||[]).map(s=>`<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value${s.highlight?' green':''}">${s.value}</div></div>`).join('');
+    const compHtml = (r.compensation||[]).map(c=>`<div class="row"><div><div class="row-label">${c.label}</div><div class="row-desc">${c.description}</div></div><div class="row-value">${c.value}</div></div>`).join('');
+    const benefitsHtml = (r.benefits||[]).map(b=>`<div class="row"><div><div class="row-label">${b.label}</div><div class="row-desc">${b.description}</div></div><div><span class="badge ${badgeClass(b.badge)}">${b.badgeText||b.badge}</span></div></div>`).join('');
+    const flagsHtml = (r.flags||[]).map(f=>`<div class="flag">${flagDot(f.type)}<div><div class="flag-title">${f.title}</div><div class="flag-detail">${f.detail}</div></div></div>`).join('');
     document.getElementById('results-content').innerHTML = `
-      <div class="summary-card">
-        <h2>${r.role || 'Your offer'}${r.company ? ' — ' + r.company : ''}</h2>
-        <div class="stat-grid">${statsHtml}</div>
-      </div>
-      ${compHtml ? `<div class="card"><div class="card-title">Compensation breakdown</div>${compHtml}</div>` : ''}
-      ${benefitsHtml ? `<div class="card"><div class="card-title">Benefits</div>${benefitsHtml}</div>` : ''}
-      ${flagsHtml ? `<div class="card"><div class="card-title">Things to know</div>${flagsHtml}</div>` : ''}
-    `;
+      <div class="summary-card"><div class="summary-header"><div><div class="summary-role">${r.role||'Your offer'}</div>${r.company?`<div class="summary-company">${r.company}</div>`:''}</div><div class="summary-badge">Analyzed</div></div><div class="stat-grid">${statsHtml}</div></div>
+      ${compHtml?`<div class="card"><div class="card-title">Compensation breakdown</div>${compHtml}</div>`:''}
+      ${benefitsHtml?`<div class="card"><div class="card-title">Benefits</div>${benefitsHtml}</div>`:''}
+      ${flagsHtml?`<div class="card"><div class="card-title">Things to know</div>${flagsHtml}</div>`:''}`;
     show('results-view');
   }
-
-  function goBack() {
-    document.getElementById('offer-text').value = '';
-    document.getElementById('results-content').innerHTML = '';
-    show('input-view');
-  }
+  function goBack() { document.getElementById('offer-text').value=''; document.getElementById('results-content').innerHTML=''; show('input-view'); }
 </script>
 </body>
 </html>
