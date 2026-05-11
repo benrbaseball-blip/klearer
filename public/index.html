@@ -67,4 +67,219 @@
     .stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
     .stat-value { font-size: 20px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
     .stat-value.green { color: var(--green); }
-    .master-copy-btn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-family: 'DM Sans', san
+    .master-copy-btn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.15s, border-color 0.15s, background 0.15s; margin-bottom: 1rem; }
+    .master-copy-btn:hover { color: var(--green); border-color: rgba(46,168,126,0.3); }
+    .master-copy-btn.copied { color: var(--green); border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.08); }
+    .master-copy-btn svg { width: 14px; height: 14px; transition: transform 0.2s; }
+    .master-copy-btn.copied svg { transform: scale(1.2); }
+    .card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .card-title { font-size: 12px; font-weight: 500; color: var(--text-3); letter-spacing: 0.3px; margin-bottom: 1.25rem; }
+    .row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border-2); gap: 16px; }
+    .row:last-child { border-bottom: none; padding-bottom: 0; }
+    .row:first-child { padding-top: 0; }
+    .row-label { font-size: 14px; font-weight: 500; color: var(--text); }
+    .row-desc { font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.55; max-width: 360px; font-weight: 300; }
+    .row-value { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; white-space: nowrap; flex-shrink: 0; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+    .badge.good { background: rgba(46,168,126,0.12); color: var(--green); border: 1px solid rgba(46,168,126,0.2); }
+    .badge.warn { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(240,165,0,0.2); }
+    .badge.danger { background: var(--red-bg); color: var(--red); border: 1px solid rgba(248,81,73,0.2); }
+    .badge.neutral { background: var(--navy-3); color: var(--text-2); border: 1px solid var(--border); }
+    .flag { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border-2); }
+    .flag:last-child { border-bottom: none; padding-bottom: 0; }
+    .flag:first-child { padding-top: 0; }
+    .flag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .flag-dot.warn { background: var(--amber); box-shadow: 0 0 6px rgba(240,165,0,0.4); }
+    .flag-dot.good { background: var(--green); box-shadow: 0 0 6px rgba(46,168,126,0.4); }
+    .flag-dot.info { background: var(--blue); box-shadow: 0 0 6px rgba(88,166,255,0.4); }
+    .flag-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .flag-detail { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
+    .action-btn { padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--navy-2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: border-color 0.2s, background 0.2s; text-align: left; }
+    .action-btn:hover { border-color: var(--green); background: var(--green-light); }
+    .action-btn-icon { font-size: 20px; margin-bottom: 8px; display: block; }
+    .action-btn-title { font-size: 14px; font-weight: 500; color: var(--text); display: block; margin-bottom: 3px; }
+    .action-btn-sub { font-size: 12px; color: var(--text-2); font-weight: 300; }
+    .feature-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 0.75rem; }
+    .feature-loading { display: flex; align-items: center; gap: 10px; padding: 1rem 0; color: var(--text-2); font-size: 13px; font-weight: 300; }
+    .feature-loading-dots { display: flex; gap: 4px; }
+    .feature-loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: bounce 1.2s infinite; }
+    .feature-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .feature-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+    .benchmark-verdict { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+    .benchmark-range { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .benchmark-stat { background: var(--navy-3); border-radius: 10px; padding: 0.75rem 1rem; text-align: center; }
+    .benchmark-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .benchmark-stat-value { font-size: 16px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
+    .benchmark-stat-value.highlight { color: var(--green); }
+    .benchmark-tip { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; padding: 12px; background: var(--navy-3); border-radius: 10px; border-left: 2px solid var(--green); }
+    .benchmark-sources { font-size: 11px; color: var(--text-3); margin-top: 0.75rem; }
+    .negotiate-script { font-size: 14px; color: var(--text-2); line-height: 1.75; font-weight: 300; white-space: pre-wrap; background: var(--navy-3); border-radius: 10px; padding: 1.25rem; }
+    .email-capture { background: var(--navy-2); border: 1px solid rgba(46,168,126,0.2); border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .email-capture-text { flex: 1; min-width: 160px; }
+    .email-capture-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .email-capture-sub { font-size: 12px; color: var(--text-2); font-weight: 300; }
+    .email-capture-form { display: flex; gap: 8px; }
+    .email-input { background: var(--navy-3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; width: 180px; transition: border-color 0.15s; }
+    .email-input:focus { border-color: var(--green); }
+    .email-input::placeholder { color: var(--text-3); }
+    .email-submit { background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+    .email-submit:hover { background: #35c494; }
+    .email-sent { font-size: 13px; color: var(--green); font-weight: 500; display: none; }
+    footer { border-top: 1px solid var(--border); margin-top: 4rem; padding: 1.5rem 0; }
+    .footer-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-left { font-size: 12px; color: var(--text-3); font-weight: 300; }
+    .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
+    @media (max-width: 600px) {
+      .headline { font-size: 38px; }
+      .action-row { grid-template-columns: 1fr; }
+      .email-capture { flex-direction: column; align-items: flex-start; }
+      .email-input { width: 100%; }
+      .email-capture-form { width: 100%; }
+    }
+    #file-input { display: none; }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">klear<em>er</em></a>
+  <a href="/interview.html" style="margin-left:1.5rem;font-size:13px;color:var(--text-3);text-decoration:none;font-weight:300;">Interview prep</a>
+  <span style="margin-left:auto;font-size:12px;color:var(--text-3);font-weight:300;">AI career tools</span>
+</nav>
+<input type="file" id="file-input" accept=".txt,.doc,.docx,.pdf">
+<div class="container">
+  <div id="input-view">
+    <h1 class="headline">Your offer letter,<br><em>decoded.</em></h1>
+    <p class="subline">Paste your offer and get an instant breakdown of salary, benefits, and the fine print — plus a negotiation script and salary benchmark.</p>
+    <div class="drop-zone" id="drop-zone">
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V8m0 0l-3 3m3-3l3 3M6 20h12a2 2 0 002-2V8l-6-6H6a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+      </div>
+      <p class="drop-title">Drop your offer letter</p>
+      <p class="drop-sub">Click to browse · PDF, Word, or text file</p>
+    </div>
+    <div class="paste-area" id="paste-area">
+      <textarea id="offer-text" placeholder="Or paste your offer letter text here..."></textarea>
+      <button class="btn-primary" onclick="analyzeText()">Analyze my offer →</button>
+    </div>
+    <div class="error" id="error-box"></div>
+    <div class="trust-row">
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Private & secure</div>
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Not stored</div>
+      <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Results in seconds</div>
+    </div>
+  </div>
+  <div id="loading-view">
+    <p class="loading-msg" id="loading-msg">Reading your offer letter...</p>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <div id="results-view">
+    <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Analyze another offer</button>
+    <div id="results-content"></div>
+  </div>
+</div>
+<footer><div class="footer-inner"><div class="footer-left"><svg width="24" height="24" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#2EA87E" stroke-width="3"/><text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text></svg></div><div class="footer-right">&copy; 2026 Klearer</div></div></footer>
+<script>
+  let currentOffer = {};
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); const file = e.dataTransfer.files[0]; if (file) readAndAnalyze(file); });
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) readAndAnalyze(e.target.files[0]); });
+  function readAndAnalyze(file) { const reader = new FileReader(); reader.onload = e => analyze(e.target.result); reader.onerror = () => showError('Could not read the file. Try pasting the text instead.'); reader.readAsText(file); }
+  function analyzeText() { const text = document.getElementById('offer-text').value.trim(); if (!text || text.length < 50) { showError('Please paste your full offer letter text first.'); return; } analyze(text); }
+  function showError(msg) { const el = document.getElementById('error-box'); el.textContent = msg; el.style.display = 'block'; }
+  function show(id) { ['input-view','loading-view','results-view'].forEach(v => { document.getElementById(v).style.display = v === id ? 'block' : 'none'; }); }
+  async function analyze(text) {
+    document.getElementById('error-box').style.display = 'none';
+    currentOffer = { text };
+    show('loading-view');
+    const pf = document.getElementById('progress-fill');
+    if (pf) { pf.style.animation = 'none'; pf.offsetHeight; pf.style.animation = ''; }
+    const msgs = ['Reading your offer letter...','Checking compensation...','Reviewing benefits...','Flagging fine print...','Almost done...'];
+    let mi = 0;
+    const msgEl = document.getElementById('loading-msg');
+    const msgInt = setInterval(() => { mi = (mi+1) % msgs.length; if (msgEl) msgEl.textContent = msgs[mi]; }, 1800);
+    window._mi = msgInt;
+    try {
+      const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      currentOffer = { ...currentOffer, ...data };
+      clearInterval(window._mi);
+      renderResults(data);
+    } catch (err) { clearInterval(window._mi); show('input-view'); showError('Error: ' + err.message); }
+  }
+  function masterCopy(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy full summary'; }, 2000);
+    });
+  }
+  function badgeClass(b) { return ['good','warn','danger','neutral'].includes(b) ? b : 'neutral'; }
+  function flagDot(type) { const cls = type === 'warn' ? 'warn' : type === 'good' ? 'good' : 'info'; return '<div class="flag-dot ' + cls + '"></div>'; }
+  function renderResults(r) {
+    const statsHtml = (r.stats||[]).map(s=>'<div class="stat"><div class="stat-label">'+s.label+'</div><div class="stat-value'+(s.highlight?' green':'')+'">'+s.value+'</div></div>').join('');
+    const compHtml = (r.compensation||[]).map(c=>'<div class="row"><div><div class="row-label">'+c.label+'</div><div class="row-desc">'+c.description+'</div></div><div class="row-value">'+c.value+'</div></div>').join('');
+    const benefitsHtml = (r.benefits||[]).map(b=>'<div class="row"><div><div class="row-label">'+b.label+'</div><div class="row-desc">'+b.description+'</div></div><div><span class="badge '+badgeClass(b.badge)+'">'+(b.badgeText||b.badge)+'</span></div></div>').join('');
+    const flagsHtml = (r.flags||[]).map(f=>'<div class="flag">'+flagDot(f.type)+'<div><div class="flag-title">'+f.title+'</div><div class="flag-detail">'+f.detail+'</div></div></div>').join('');
+    const fullSummary = '★ Analyzed by Klearer — klearer.vercel.app\n\n'+(r.role||'Offer')+(r.company?' — '+r.company:'')+'\n\n=== Overview ===\n'+(r.stats||[]).map(s=>s.label+': '+s.value).join('\n')+'\n\n=== Compensation ===\n'+(r.compensation||[]).map(c=>c.label+': '+c.value+'\n'+c.description).join('\n\n')+'\n\n=== Benefits ===\n'+(r.benefits||[]).map(b=>b.label+' ('+(b.badgeText||b.badge)+'): '+b.description).join('\n\n')+'\n\n=== Things to know ===\n'+(r.flags||[]).map(f=>f.title+': '+f.detail).join('\n\n');
+    document.getElementById('results-content').innerHTML =
+      '<div class="summary-card"><div class="summary-header"><div><div class="summary-role">'+(r.role||'Your offer')+'</div>'+(r.company?'<div class="summary-company">'+r.company+'</div>':'')+'</div></div><div class="stat-grid">'+statsHtml+'</div></div>'+
+      '<button class="master-copy-btn" onclick="masterCopy('+JSON.stringify(fullSummary)+', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy full summary</button>'+
+      '<div class="email-capture"><div class="email-capture-text"><div class="email-capture-title">Get a copy of this breakdown</div><div class="email-capture-sub">We\'ll send it to your inbox.</div></div><div class="email-capture-form" id="email-form"><input class="email-input" id="email-input" type="email" placeholder="your@email.com"><button class="email-submit" onclick="submitEmail()">Send</button></div><div class="email-sent" id="email-sent">Sent ✓</div></div>'+
+      '<div class="action-row"><button class="action-btn" onclick="loadBenchmark()"><span class="action-btn-icon">📊</span><span class="action-btn-title">Salary benchmark</span><span class="action-btn-sub">How does this compare nationally?</span></button><button class="action-btn" onclick="loadNegotiate()"><span class="action-btn-icon">💬</span><span class="action-btn-title">Negotiate this offer</span><span class="action-btn-sub">Get a personalized script</span></button></div>'+
+      '<div id="benchmark-card" style="display:none;"></div>'+
+      '<div id="negotiate-card" style="display:none;"></div>'+
+      (compHtml?'<div class="card"><div class="card-title">Compensation breakdown</div>'+compHtml+'</div>':'')+
+      (benefitsHtml?'<div class="card"><div class="card-title">Benefits</div>'+benefitsHtml+'</div>':'')+
+      (flagsHtml?'<div class="card"><div class="card-title">Things to know</div>'+flagsHtml+'</div>':'');
+    show('results-view');
+  }
+  async function submitEmail() {
+    const email = document.getElementById('email-input').value.trim();
+    if (!email || !email.includes('@')) return;
+    const btn = document.querySelector('.email-submit');
+    btn.textContent = 'Sending...'; btn.disabled = true;
+    try {
+      await fetch('https://formspree.io/f/mgodrbov', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ email, role: currentOffer.role || '', company: currentOffer.company || '' }) });
+      document.getElementById('email-form').style.display = 'none';
+      document.getElementById('email-sent').style.display = 'block';
+    } catch(err) { btn.textContent = 'Send'; btn.disabled = false; }
+  }
+  async function loadBenchmark() {
+    const card = document.getElementById('benchmark-card');
+    card.style.display = 'block';
+    card.innerHTML = '<div class="feature-card"><div class="feature-loading"><div class="feature-loading-dots"><span></span><span></span><span></span></div>Looking up national salary data...</div></div>';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const salary = (currentOffer.stats||[]).find(s=>s.label==='Base salary')?.value || '';
+    try {
+      const res = await fetch('/api/benchmark', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: currentOffer.role, salary }) });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error);
+      const vc = d.verdict==='above'?'var(--green)':d.verdict==='below'?'var(--red)':'var(--amber)';
+      const bt = '★ Analyzed by Klearer — klearer.vercel.app\n\nSalary Benchmark: '+d.role+'\n\nNational range: '+d.range_low+' – '+d.range_high+'\nMedian: '+d.national_median+'\nYour offer: '+(salary||'not specified')+'\n\n'+d.verdict_text+'\n\nTip: '+d.negotiation_tip+'\n\n'+d.sources;
+      card.innerHTML = '<div class="feature-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem"><div class="card-title">Salary benchmark — '+d.role+'</div><button class="master-copy-btn" style="margin-bottom:0" onclick="masterCopy('+JSON.stringify(bt)+', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="benchmark-verdict" style="color:'+vc+'">'+d.verdict_text+'</div><div class="benchmark-range"><div class="benchmark-stat"><div class="benchmark-stat-label">Low</div><div class="benchmark-stat-value">'+d.range_low+'</div></div><div class="benchmark-stat"><div class="benchmark-stat-label">Median</div><div class="benchmark-stat-value highlight">'+d.national_median+'</div></div><div class="benchmark-stat"><div class="benchmark-stat-label">High</div><div class="benchmark-stat-value">'+d.range_high+'</div></div></div><div class="benchmark-tip">'+d.negotiation_tip+'</div><div class="benchmark-sources">'+d.sources+'</div></div>';
+    } catch(err) { card.innerHTML = '<div class="feature-card"><div style="font-size:13px;color:var(--red)">Could not load benchmark data. Please try again.</div></div>'; }
+  }
+  async function loadNegotiate() {
+    const card = document.getElementById('negotiate-card');
+    card.style.display = 'block';
+    card.innerHTML = '<div class="feature-card"><div class="feature-loading"><div class="feature-loading-dots"><span></span><span></span><span></span></div>Writing your negotiation script...</div></div>';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const salary = (currentOffer.stats||[]).find(s=>s.label==='Base salary')?.value || '';
+    try {
+      const res = await fetch('/api/negotiate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: currentOffer.role, company: currentOffer.company, salary, offerText: currentOffer.text }) });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error);
+      card.innerHTML = '<div class="feature-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem"><div class="card-title">Negotiation script</div><button class="master-copy-btn" style="margin-bottom:0" onclick="masterCopy('+JSON.stringify(d.script)+', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button></div><div class="negotiate-script">'+d.script.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div></div>';
+    } catch(err) { card.innerHTML = '<div class="feature-card"><div style="font-size:13px;color:var(--red)">Could not generate script. Please try again.</div></div>'; }
+  }
+  function goBack() { document.getElementById('offer-text').value=''; document.getElementById('results-content').innerHTML=''; currentOffer={}; show('input-view'); }
+</script>
+</body>
+</html>
