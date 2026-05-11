@@ -209,4 +209,4 @@ Return ONLY valid JSON:
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Klearer running at
+app.listen(PORT, () => console.log(`Klearer running at http://localhost:${PORT}`));
