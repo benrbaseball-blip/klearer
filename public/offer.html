@@ -160,14 +160,24 @@
   fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
 
   function handleFile(file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      fileText = e.target.result;
-      document.getElementById('drop-filename').textContent = file.name;
-      checkReady();
-    };
-    reader.onerror = () => showError('Could not read the file. Try pasting the text instead.');
-    reader.readAsText(file);
+    const allowed = ['.pdf', '.doc', '.docx', '.txt'];
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowed.includes(ext)) {
+      showError('Please upload a PDF, Word doc, or text file.');
+      return;
+    }
+    document.getElementById('drop-filename').textContent = file.name + ' — extracting text...';
+    const formData = new FormData();
+    formData.append('file', file);
+    fetch('/api/extract-text', { method: 'POST', body: formData })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) { showError(data.error); document.getElementById('drop-filename').textContent = ''; return; }
+        fileText = data.text;
+        document.getElementById('drop-filename').textContent = file.name + ' — ready';
+        checkReady();
+      })
+      .catch(() => { showError('Could not read file. Try pasting the text instead.'); document.getElementById('drop-filename').textContent = ''; });
   }
 
   document.getElementById('paste-input').addEventListener('input', checkReady);
