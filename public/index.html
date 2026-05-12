@@ -4,82 +4,136 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klearer — Every document made klearer</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23eef4f0' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #0D1117; --navy-2: #161B22; --navy-3: #21262D;
-      --green: #2EA87E; --green-light: rgba(46,168,126,0.08);
-      --text: #E6EDF3; --text-2: #8B949E; --text-3: #484F58;
-      --border: rgba(255,255,255,0.08);
+      --bg: #eef4f0;
+      --green: #2EA87E;
+      --text: #1a2e25;
+      --text-2: rgba(26,46,37,0.5);
+      --text-3: rgba(26,46,37,0.3);
+      --border: rgba(255,255,255,0.8);
+      --border-subtle: rgba(46,168,126,0.15);
     }
     html, body { height: 100%; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
-    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
-    #intro { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--navy); transition: opacity 0.6s ease; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
+
+    /* ORBS */
+    .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+    .orb-1 { width: 340px; height: 340px; top: -100px; left: -80px; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.7), rgba(46,168,126,0.25) 50%, rgba(46,168,126,0.05) 100%); box-shadow: inset -10px -10px 24px rgba(46,168,126,0.15), inset 5px 5px 14px rgba(255,255,255,0.6); }
+    .orb-2 { width: 240px; height: 240px; top: 80px; right: -50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(46,168,126,0.2) 55%, rgba(46,168,126,0.04) 100%); box-shadow: inset -7px -7px 18px rgba(46,168,126,0.12), inset 4px 4px 12px rgba(255,255,255,0.7); }
+    .orb-3 { width: 180px; height: 180px; bottom: 120px; left: 30px; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(46,168,126,0.22) 55%, rgba(46,168,126,0.05) 100%); box-shadow: inset -6px -6px 16px rgba(46,168,126,0.1), inset 3px 3px 10px rgba(255,255,255,0.65); }
+    .orb-4 { width: 130px; height: 130px; bottom: 60px; right: 80px; background: radial-gradient(circle at 33% 33%, rgba(255,255,255,0.8), rgba(46,168,126,0.18) 55%, rgba(46,168,126,0.04) 100%); box-shadow: inset -4px -4px 14px rgba(46,168,126,0.1), inset 3px 3px 8px rgba(255,255,255,0.7); }
+    .orb-5 { width: 100px; height: 100px; top: 40%; left: 50px; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7), rgba(46,168,126,0.2) 55%, rgba(46,168,126,0.04) 100%); box-shadow: inset -3px -3px 10px rgba(46,168,126,0.1), inset 2px 2px 6px rgba(255,255,255,0.6); }
+
+    /* INTRO */
+    #intro { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); transition: opacity 0.6s ease; }
     #intro.hide { opacity: 0; pointer-events: none; }
     .intro-logo { opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; margin-bottom: 1.5rem; }
     .intro-logo.show { opacity: 1; transform: translateY(0); }
-    .intro-tagline { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; line-height: 1.3; }
+    .intro-tagline { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; line-height: 1.3; color: var(--text); }
     .intro-tagline.show { opacity: 1; transform: translateY(0); }
     .intro-klearer { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; font-style: italic; color: var(--green); opacity: 0; transform: translateY(8px); transition: opacity 0.6s ease, transform 0.6s ease; margin-top: 0.25rem; text-align: center; }
+
+    /* APP */
     #app { opacity: 0; transition: opacity 0.6s ease; position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
     #app.show { opacity: 1; }
-    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
-    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 64px; display: flex; align-items: center; border-bottom: 0.5px solid var(--border-subtle); background: rgba(238,244,240,0.7); backdrop-filter: blur(16px); }
+    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; letter-spacing: -0.3px; }
     .logo em { font-style: italic; color: var(--green); }
-    .container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+    /* LAYOUT */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 2; }
+
+    /* HERO */
     .hero { padding: 5rem 0 2.5rem; text-align: center; }
-    .hero-tagline { font-family: 'Instrument Serif', serif; font-size: 42px; font-weight: 400; letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.15; }
+    .hero-tagline { font-family: 'Instrument Serif', serif; font-size: 50px; font-weight: 400; letter-spacing: -2px; margin-bottom: 1.25rem; line-height: 1.05; color: var(--text); }
     .hero-tagline em { font-style: italic; color: var(--green); }
-    .hero-sub { font-size: 15px; color: var(--text-2); font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.7; }
-    .engine-wrap { padding: 2rem 0 1.25rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+
+    /* CYCLING TEXT */
+    .cycling-wrap { height: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 2.5rem; overflow: hidden; }
+    .cycling-text { font-size: 15px; color: var(--text-2); font-weight: 300; opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease; position: absolute; }
+    .cycling-text.active { opacity: 1; transform: translateY(0); }
+    .cycling-text.exit { opacity: 0; transform: translateY(-8px); }
+
+    /* ENGINE */
+    .engine-wrap { padding: 0 0 1rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .engine-wrap.visible { opacity: 1; transform: translateY(0); }
-    .engine { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
-    .engine-heading { font-size: 13px; color: var(--text-3); margin-bottom: 1rem; text-align: center; }
-    .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
-    .doc-card { background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; display: flex; align-items: center; gap: 10px; }
-    .doc-card:hover { border-color: rgba(46,168,126,0.4); background: rgba(46,168,126,0.05); }
-    .doc-card.active { border-color: var(--green); background: rgba(46,168,126,0.08); }
-    .doc-card-icon { font-size: 18px; flex-shrink: 0; }
-    .doc-card-name { font-size: 13px; font-weight: 500; color: var(--text); }
-    .doc-card-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-    .go-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; }
-    .go-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .engine-label { text-align: center; font-size: 12px; color: var(--text-3); margin-bottom: 3.5rem; margin-top: 0.75rem; }
-    .engine-label span { color: var(--green); }
-    .resources-label { text-align: center; font-size: 11px; font-weight: 500; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.25rem; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .glass-panel { background: rgba(255,255,255,0.45); border: 0.5px solid rgba(255,255,255,0.8); border-radius: 28px; padding: 24px; position: relative; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 8px 32px rgba(46,168,126,0.08), 0 1px 0 rgba(255,255,255,0.9) inset; }
+    .glass-panel::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, transparent); border-radius: 28px; }
+
+    /* TABS */
+    .tabs { display: flex; background: rgba(26,46,37,0.05); border-radius: 10px; padding: 3px; margin-bottom: 18px; border: 0.5px solid rgba(26,46,37,0.08); }
+    .tab { flex: 1; text-align: center; font-size: 13px; color: var(--text-3); padding: 7px 0; border-radius: 8px; cursor: pointer; border: none; background: transparent; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .tab.active { background: rgba(255,255,255,0.8); color: var(--text); border: 0.5px solid rgba(26,46,37,0.1); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+    /* UPLOAD ZONE */
+    .upload-zone { border: 1px dashed rgba(46,168,126,0.3); border-radius: 18px; padding: 52px 24px; text-align: center; cursor: pointer; transition: all 0.25s; background: rgba(46,168,126,0.03); margin-bottom: 16px; }
+    .upload-zone:hover { border-color: rgba(46,168,126,0.55); background: rgba(46,168,126,0.06); }
+    .upload-zone.has-file { border-color: rgba(46,168,126,0.55); background: rgba(46,168,126,0.06); border-style: solid; }
+    .upload-icon { color: var(--green); margin-bottom: 12px; opacity: 0.75; }
+    .upload-title { font-size: 14px; font-weight: 400; color: rgba(26,46,37,0.6); margin-bottom: 5px; }
+    .upload-hint { font-size: 12px; color: var(--text-3); }
+    .upload-filename { font-size: 12px; color: var(--green); margin-top: 10px; font-weight: 500; }
+
+    /* PASTE ZONE */
+    .paste-zone { display: none; margin-bottom: 16px; }
+    .paste-zone textarea { width: 100%; height: 164px; background: rgba(255,255,255,0.6); border: 0.5px solid rgba(26,46,37,0.1); border-radius: 16px; padding: 14px 16px; font-size: 13px; color: var(--text); resize: none; outline: none; font-family: 'DM Sans', sans-serif; line-height: 1.65; transition: border-color 0.2s; font-weight: 300; }
+    .paste-zone textarea::placeholder { color: rgba(26,46,37,0.25); }
+    .paste-zone textarea:focus { border-color: rgba(46,168,126,0.4); }
+
+    /* BUTTON */
+    .analyze-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; opacity: 0.3; pointer-events: none; box-shadow: 0 4px 16px rgba(46,168,126,0.25); }
+    .analyze-btn.ready { opacity: 1; pointer-events: all; }
+    .analyze-btn.ready:hover { opacity: 0.92; transform: translateY(-1px); }
+    .engine-label { text-align: center; font-size: 11px; color: var(--text-3); margin-top: 14px; margin-bottom: 3rem; }
+    .engine-label span { color: var(--green); opacity: 0.8; }
+
+    /* RESOURCES */
+    .resources-label { text-align: center; font-size: 10px; font-weight: 500; color: var(--text-3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .resources-label.visible { opacity: 1; transform: translateY(0); }
-    .resources { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding-bottom: 5rem; }
-    .resource-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.2s, background 0.2s; display: flex; flex-direction: column; opacity: 0; transform: translateY(12px); }
+    .resources { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding-bottom: 5rem; }
+    .resource-card { background: rgba(255,255,255,0.4); border: 0.5px solid rgba(255,255,255,0.75); border-radius: 16px; padding: 16px; cursor: pointer; text-decoration: none; color: inherit; transition: all 0.2s; display: flex; flex-direction: column; opacity: 0; transform: translateY(12px); backdrop-filter: blur(12px); }
     .resource-card.visible { opacity: 1; transform: translateY(0); }
-    .resource-card:hover { border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.03); }
+    .resource-card:hover { background: rgba(255,255,255,0.6); border-color: rgba(46,168,126,0.2); }
     .resource-card.coming-soon { cursor: default; }
     .resource-card.coming-soon.visible { opacity: 0.4; }
-    .resource-card.coming-soon:hover { border-color: var(--border); background: var(--navy-2); }
-    .resource-icon { margin-bottom: 0.75rem; color: var(--green); }
-    .resource-tag { display: inline-block; font-size: 10px; color: var(--text-3); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 3px 10px; margin-bottom: 0.6rem; }
-    .resource-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: 'Instrument Serif', serif; letter-spacing: -0.2px; }
-    .resource-desc { font-size: 12px; color: var(--text-2); font-weight: 300; line-height: 1.55; flex: 1; }
-    footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: auto; }
+    .resource-card.coming-soon:hover { background: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.75); }
+    .resource-icon { color: var(--green); margin-bottom: 10px; opacity: 0.75; }
+    .resource-tag { display: inline-block; font-size: 10px; color: var(--text-3); background: rgba(26,46,37,0.05); border: 0.5px solid rgba(26,46,37,0.08); border-radius: 20px; padding: 2px 8px; margin-bottom: 7px; }
+    .resource-name { font-size: 12px; font-weight: 500; color: rgba(26,46,37,0.7); margin-bottom: 5px; font-family: 'Instrument Serif', serif; }
+    .resource-desc { font-size: 11px; color: rgba(26,46,37,0.35); line-height: 1.55; flex: 1; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid var(--border-subtle); padding: 1.25rem 0; margin-top: auto; background: rgba(238,244,240,0.4); backdrop-filter: blur(8px); position: relative; z-index: 2; }
     .footer-inner { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
+    .footer-k { width: 28px; height: 28px; border-radius: 50%; border: 0.5px solid rgba(46,168,126,0.25); background: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--green); font-style: italic; font-weight: 500; font-family: 'Instrument Serif', serif; }
+    .footer-right { font-size: 11px; color: var(--text-3); font-weight: 300; }
+
     @media (max-width: 600px) {
       .resources { grid-template-columns: 1fr; }
-      .doc-grid { grid-template-columns: 1fr; }
-      .hero-tagline { font-size: 32px; }
+      .hero-tagline { font-size: 36px; }
       .intro-tagline, .intro-klearer { font-size: 22px; padding: 0 2rem; }
     }
   </style>
 </head>
 <body>
 
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
+<div class="orb orb-5"></div>
+
 <div id="intro">
   <div class="intro-logo" id="intro-logo">
     <svg width="64" height="64" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#2EA87E" stroke-width="3"/>
+      <circle cx="50" cy="50" r="48" fill="#eef4f0" stroke="#2EA87E" stroke-width="3"/>
       <text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text>
     </svg>
   </div>
@@ -95,57 +149,42 @@
   <div class="container">
     <div class="hero">
       <h1 class="hero-tagline">Every document,<br>made <em>klearer</em></h1>
-      <p class="hero-sub">Upload anything you've been handed and told to sign. Klearer reads it — and tells you what actually matters.</p>
+      <div class="cycling-wrap" id="cycling-wrap">
+        <span class="cycling-text active" id="cycle-0">offer letters</span>
+        <span class="cycling-text" id="cycle-1">lease agreements</span>
+        <span class="cycling-text" id="cycle-2">insurance policies</span>
+        <span class="cycling-text" id="cycle-3">car contracts</span>
+        <span class="cycling-text" id="cycle-4">medical forms</span>
+        <span class="cycling-text" id="cycle-5">bank agreements</span>
+        <span class="cycling-text" id="cycle-6">student loans</span>
+        <span class="cycling-text" id="cycle-7">terms & conditions</span>
+      </div>
     </div>
 
     <div class="engine-wrap" id="engine-wrap">
-      <div class="engine">
-        <div class="engine-heading">What are you trying to understand?</div>
-        <div class="doc-grid">
-          <div class="doc-card active" data-dest="/offer.html">
-            <span class="doc-card-icon">📄</span>
-            <div><div class="doc-card-name">Offer letter</div><div class="doc-card-sub">Salary, benefits, fine print</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🏠</span>
-            <div><div class="doc-card-name">Lease agreement</div><div class="doc-card-sub">Clauses, deposits, penalties</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🛡️</span>
-            <div><div class="doc-card-name">Insurance policy</div><div class="doc-card-sub">Coverage, exclusions, limits</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🏥</span>
-            <div><div class="doc-card-name">Medical forms</div><div class="doc-card-sub">What you're agreeing to</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🏦</span>
-            <div><div class="doc-card-name">Bank contract</div><div class="doc-card-sub">Fees, terms, obligations</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🚗</span>
-            <div><div class="doc-card-name">Car contract</div><div class="doc-card-sub">Hidden fees, add-ons</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🎓</span>
-            <div><div class="doc-card-name">Student loans</div><div class="doc-card-sub">Rates, terms, repayment</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">📋</span>
-            <div><div class="doc-card-name">Terms & conditions</div><div class="doc-card-sub">What you're really agreeing to</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">🏘️</span>
-            <div><div class="doc-card-name">HOA agreement</div><div class="doc-card-sub">Rules, fees, restrictions</div></div>
-          </div>
-          <div class="doc-card" data-dest="/offer.html">
-            <span class="doc-card-icon">📎</span>
-            <div><div class="doc-card-name">Anything else</div><div class="doc-card-sub">Any document, any type</div></div>
-          </div>
+      <div class="glass-panel">
+        <div class="tabs">
+          <button class="tab active" id="tab-upload" onclick="switchTab('upload')">Upload file</button>
+          <button class="tab" id="tab-paste" onclick="switchTab('paste')">Paste text</button>
         </div>
-        <button class="go-btn" id="go-btn">
+
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-title">Drop your document here</div>
+          <div class="upload-hint">PDF, Word, or .txt — any document, any type</div>
+          <div class="upload-filename" id="upload-filename"></div>
+          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none">
+        </div>
+
+        <div class="paste-zone" id="paste-zone">
+          <textarea id="paste-input" placeholder="Paste your document text here..."></textarea>
+        </div>
+
+        <button class="analyze-btn" id="analyze-btn">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          Get started
+          Analyze document
         </button>
       </div>
       <div class="engine-label">Powered by <span>Klearer AI</span> — one engine, every document</div>
@@ -182,16 +221,14 @@
 
   <footer>
     <div class="footer-inner">
-      <svg width="24" height="24" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="48" fill="#0D1117" stroke="#2EA87E" stroke-width="3"/>
-        <text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text>
-      </svg>
+      <div class="footer-k">k</div>
       <div class="footer-right">&copy; 2026 Klearer</div>
     </div>
   </footer>
 </div>
 
 <script>
+  // INTRO
   const seen = sessionStorage.getItem('klearer-intro');
   if (seen) {
     document.getElementById('intro').style.display = 'none';
@@ -227,34 +264,93 @@
         if (el) { el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s'; el.classList.add('visible'); }
       }, 400 + i * 100);
     });
+    startCycling();
   }
 
-  // DOC CARD SELECTION
-  let selectedDest = '/offer.html';
-  let selectedType = 'offer-letter';
+  // CYCLING TEXT
+  const cycleItems = ['offer letters', 'lease agreements', 'insurance policies', 'car contracts', 'medical forms', 'bank agreements', 'student loans', 'terms & conditions'];
+  let cycleIndex = 0;
 
-  const typeMap = {
-    0: 'offer-letter', 1: 'lease', 2: 'insurance', 3: 'medical',
-    4: 'bank', 5: 'car', 6: 'student-loans', 7: 'terms', 8: 'hoa', 9: 'other'
-  };
+  function startCycling() {
+    setInterval(() => {
+      const current = document.getElementById('cycle-' + cycleIndex);
+      current.classList.remove('active');
+      current.classList.add('exit');
+      setTimeout(() => { current.classList.remove('exit'); }, 500);
+      cycleIndex = (cycleIndex + 1) % cycleItems.length;
+      const next = document.getElementById('cycle-' + cycleIndex);
+      next.classList.add('active');
+    }, 2200);
+  }
 
-  document.querySelectorAll('.doc-card').forEach((card, i) => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      selectedDest = card.dataset.dest;
-      selectedType = typeMap[i];
-    });
+  // TAB TOGGLE
+  let activeTab = 'upload';
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+    document.getElementById('tab-paste').classList.toggle('active', tab === 'paste');
+    document.getElementById('upload-zone').style.display = tab === 'upload' ? 'block' : 'none';
+    document.getElementById('paste-zone').style.display = tab === 'paste' ? 'block' : 'none';
+    checkReady();
+  }
+
+  // FILE UPLOAD
+  let hasFile = false;
+  let fileText = null;
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.getElementById('file-input');
+
+  uploadZone.addEventListener('click', () => fileInput.click());
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'rgba(46,168,126,0.55)'; });
+  uploadZone.addEventListener('dragleave', () => { if (!hasFile) uploadZone.style.borderColor = ''; });
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
   });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-  // GO BUTTON
-  document.getElementById('go-btn').addEventListener('click', () => {
-    sessionStorage.setItem('klearer-doc-type', selectedType);
+  function handleFile(file) {
+    const allowed = ['.pdf', '.doc', '.docx', '.txt'];
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowed.includes(ext)) return;
+    document.getElementById('upload-filename').textContent = file.name + ' — extracting text...';
+    const formData = new FormData();
+    formData.append('file', file);
+    fetch('/api/extract-text', { method: 'POST', body: formData })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) { document.getElementById('upload-filename').textContent = ''; return; }
+        fileText = data.text;
+        hasFile = true;
+        document.getElementById('upload-filename').textContent = file.name + ' — ready';
+        uploadZone.classList.add('has-file');
+        checkReady();
+      })
+      .catch(() => { document.getElementById('upload-filename').textContent = ''; });
+  }
+
+  // PASTE
+  document.getElementById('paste-input').addEventListener('input', checkReady);
+
+  function checkReady() {
+    const pasteVal = document.getElementById('paste-input').value.trim();
+    const ready = (activeTab === 'upload' && hasFile) || (activeTab === 'paste' && pasteVal.length > 20);
+    document.getElementById('analyze-btn').classList.toggle('ready', ready);
+  }
+
+  // ANALYZE
+  document.getElementById('analyze-btn').addEventListener('click', () => {
+    const pasteVal = document.getElementById('paste-input').value.trim();
+    const text = activeTab === 'paste' ? pasteVal : fileText;
+    if (!text) return;
+    if (activeTab === 'paste') sessionStorage.setItem('klearer-paste', pasteVal);
+    sessionStorage.setItem('klearer-offer-text', text);
     document.getElementById('app').style.opacity = '0';
-    setTimeout(() => { window.location.href = selectedDest; }, 400);
+    setTimeout(() => { window.location.href = '/offer.html'; }, 400);
   });
 
-  // RESOURCE CARD CLICKS
+  // RESOURCE CLICKS
   document.querySelectorAll('.resource-card:not(.coming-soon)').forEach(card => {
     card.addEventListener('click', function(e) {
       e.preventDefault();
