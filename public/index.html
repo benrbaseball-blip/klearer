@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klearer — Every decision made klearer</title>
+  <title>Klearer — Every document made klearer</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230D1117' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -18,6 +18,8 @@
     html, body { height: 100%; }
     body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+
+    /* INTRO */
     #intro { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--navy); transition: opacity 0.6s ease; }
     #intro.hide { opacity: 0; pointer-events: none; }
     .intro-logo { opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; margin-bottom: 1.5rem; }
@@ -25,36 +27,72 @@
     .intro-tagline { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; line-height: 1.3; }
     .intro-tagline.show { opacity: 1; transform: translateY(0); }
     .intro-klearer { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; font-style: italic; color: var(--green); opacity: 0; transform: translateY(8px); transition: opacity 0.6s ease, transform 0.6s ease; margin-top: 0.25rem; text-align: center; }
+
+    /* APP */
     #app { opacity: 0; transition: opacity 0.6s ease; position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
     #app.show { opacity: 1; }
+
+    /* NAV */
     nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
     .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
     .logo em { font-style: italic; color: var(--green); }
-    .nav-right { margin-left: auto; font-size: 12px; color: var(--text-3); font-weight: 300; }
+
+    /* LAYOUT */
     .container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
-    .hero { padding: 5rem 0 3rem; text-align: center; }
+
+    /* HERO */
+    .hero { padding: 5rem 0 2.5rem; text-align: center; }
     .hero-tagline { font-family: 'Instrument Serif', serif; font-size: 42px; font-weight: 400; letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.15; }
     .hero-tagline em { font-style: italic; color: var(--green); }
     .hero-sub { font-size: 15px; color: var(--text-2); font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.7; }
-    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 2.5rem 0 6rem; }
-    .tool-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 2rem 1.75rem; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.2s, transform 0.2s, background 0.2s; display: flex; flex-direction: column; opacity: 0; transform: translateY(16px); }
-    .tool-card.visible { opacity: 1; transform: translateY(0); }
-    .tool-card:hover { border-color: var(--green); background: rgba(46,168,126,0.04); transform: translateY(-2px); }
-    .tool-card.coming-soon { cursor: default; opacity: 0; transform: translateY(16px); }
-    .tool-card.coming-soon.visible { opacity: 0.4; transform: translateY(0); }
-    .tool-card.coming-soon:hover { border-color: var(--border); background: var(--navy-2); transform: none; }
-    .tool-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--navy-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
-    .tool-tag { font-size: 10px; font-weight: 500; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
-    .tool-tag.soon { color: var(--text-3); }
-    .tool-name { font-size: 18px; font-weight: 500; margin-bottom: 6px; font-family: 'Instrument Serif', serif; letter-spacing: -0.3px; }
-    .tool-desc { font-size: 13px; color: var(--text-2); font-weight: 300; line-height: 1.6; flex: 1; }
-    .tool-arrow { margin-top: 1.5rem; font-size: 13px; color: var(--green); font-weight: 500; display: flex; align-items: center; gap: 6px; }
-    .tool-arrow svg { width: 14px; height: 14px; transition: transform 0.2s; }
-    .tool-card:hover .tool-arrow svg { transform: translateX(4px); }
+
+    /* UPLOAD ENGINE */
+    .engine-wrap { padding: 2rem 0 1.25rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .engine-wrap.visible { opacity: 1; transform: translateY(0); }
+    .engine { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
+    .upload-zone { border: 1px dashed rgba(46,168,126,0.35); border-radius: 14px; padding: 2.75rem 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 1.25rem; }
+    .upload-zone:hover { border-color: rgba(46,168,126,0.7); background: rgba(46,168,126,0.03); }
+    .upload-zone.dragover { border-color: var(--green); background: rgba(46,168,126,0.06); }
+    .upload-icon { margin-bottom: 0.75rem; color: var(--green); }
+    .upload-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .upload-sub { font-size: 13px; color: var(--text-3); font-weight: 300; }
+    .upload-filename { font-size: 13px; color: var(--green); margin-top: 8px; font-weight: 400; }
+    .doc-types { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1.25rem; }
+    .doc-pill { font-size: 12px; color: var(--text-3); background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 14px; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; font-family: 'DM Sans', sans-serif; }
+    .doc-pill:hover { color: var(--text-2); border-color: rgba(255,255,255,0.2); }
+    .doc-pill.active { color: var(--green); background: rgba(46,168,126,0.08); border-color: rgba(46,168,126,0.35); }
+    .analyze-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; opacity: 0.45; pointer-events: none; }
+    .analyze-btn.ready { opacity: 1; pointer-events: all; }
+    .analyze-btn.ready:hover { opacity: 0.9; transform: translateY(-1px); }
+    .engine-label { text-align: center; font-size: 12px; color: var(--text-3); margin-bottom: 3.5rem; margin-top: 0.75rem; }
+    .engine-label span { color: var(--green); }
+
+    /* ADDITIONAL RESOURCES */
+    .resources-label { text-align: center; font-size: 11px; font-weight: 500; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.25rem; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .resources-label.visible { opacity: 1; transform: translateY(0); }
+    .resources { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding-bottom: 5rem; }
+    .resource-card { background: var(--navy-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.2s, background 0.2s; display: flex; flex-direction: column; opacity: 0; transform: translateY(12px); }
+    .resource-card.visible { opacity: 1; transform: translateY(0); }
+    .resource-card:hover { border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.03); }
+    .resource-card.coming-soon { cursor: default; }
+    .resource-card.coming-soon.visible { opacity: 0.4; }
+    .resource-card.coming-soon:hover { border-color: var(--border); background: var(--navy-2); }
+    .resource-icon { margin-bottom: 0.75rem; color: var(--green); }
+    .resource-tag { display: inline-block; font-size: 10px; color: var(--text-3); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 3px 10px; margin-bottom: 0.6rem; }
+    .resource-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: 'Instrument Serif', serif; letter-spacing: -0.2px; }
+    .resource-desc { font-size: 12px; color: var(--text-2); font-weight: 300; line-height: 1.55; flex: 1; }
+
+    /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: auto; }
     .footer-inner { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
-    @media (max-width: 600px) { .tools { grid-template-columns: 1fr; } .hero-tagline { font-size: 32px; } .intro-tagline, .intro-klearer { font-size: 22px; padding: 0 2rem; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .resources { grid-template-columns: 1fr; }
+      .hero-tagline { font-size: 32px; }
+      .intro-tagline, .intro-klearer { font-size: 22px; padding: 0 2rem; }
+    }
   </style>
 </head>
 <body>
@@ -66,60 +104,83 @@
       <text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text>
     </svg>
   </div>
-  <div class="intro-tagline" id="intro-tagline">Every decision made</div>
+  <div class="intro-tagline" id="intro-tagline">Every document made</div>
   <div class="intro-klearer" id="intro-klearer">klearer</div>
 </div>
 
 <div id="app">
   <nav>
     <a class="logo" href="/" onclick="sessionStorage.removeItem('klearer-intro')">klear<em>er</em></a>
-    <span class="nav-right">AI career tools</span>
   </nav>
 
   <div class="container">
     <div class="hero">
-      <h1 class="hero-tagline">Every decision,<br>made <em>klearer</em></h1>
-      <p class="hero-sub">AI-powered tools for the moments that matter most in your career.</p>
+      <h1 class="hero-tagline">Every document,<br>made <em>klearer</em></h1>
+      <p class="hero-sub">Upload anything you've been handed and told to sign. Klearer reads it — and tells you what actually matters.</p>
     </div>
 
-    <div class="tools">
-      <a href="/offer.html" class="tool-card" id="card-1">
-        <div class="tool-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <!-- UPLOAD ENGINE -->
+    <div class="engine-wrap" id="engine-wrap">
+      <div class="engine">
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-title">Drop your document here</div>
+          <div class="upload-sub">PDF, Word, or paste text — any document, any type</div>
+          <div class="upload-filename" id="upload-filename"></div>
+          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none">
         </div>
-        <span class="tool-tag">Free</span>
-        <div class="tool-name">Offer Analysis</div>
-        <div class="tool-desc">Decode your offer letter — salary, benefits, equity, and the fine print — in plain English.</div>
-        <div class="tool-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+
+        <div class="doc-types" id="doc-types">
+          <button class="doc-pill active" data-type="offer-letter">Offer letter</button>
+          <button class="doc-pill" data-type="lease">Lease agreement</button>
+          <button class="doc-pill" data-type="insurance">Insurance policy</button>
+          <button class="doc-pill" data-type="medical">Medical forms</button>
+          <button class="doc-pill" data-type="bank">Bank contract</button>
+          <button class="doc-pill" data-type="car">Car contract</button>
+          <button class="doc-pill" data-type="student-loans">Student loans</button>
+          <button class="doc-pill" data-type="terms">Terms & conditions</button>
+          <button class="doc-pill" data-type="hoa">HOA agreement</button>
+          <button class="doc-pill" data-type="other">Anything else</button>
+        </div>
+
+        <button class="analyze-btn" id="analyze-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Analyze document
+        </button>
+      </div>
+      <div class="engine-label">Powered by <span>Klearer AI</span> — one engine, every document</div>
+    </div>
+
+    <!-- ADDITIONAL RESOURCES -->
+    <div class="resources-label" id="resources-label">Additional resources</div>
+    <div class="resources">
+      <a href="/interview.html" class="resource-card" id="res-1">
+        <div class="resource-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <span class="resource-tag">Free + $1.99</span>
+        <div class="resource-name">Interview Prep</div>
+        <div class="resource-desc">Personalized questions based on the job and live company research.</div>
       </a>
 
-      <a href="/interview.html" class="tool-card" id="card-2">
-        <div class="tool-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <a href="/review.html" class="resource-card" id="res-2">
+        <div class="resource-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
-        <span class="tool-tag">Free + $1.99</span>
-        <div class="tool-name">Interview Prep</div>
-        <div class="tool-desc">Get personalized interview questions based on the job description and live company research.</div>
-        <div class="tool-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <span class="resource-tag">$4.99</span>
+        <div class="resource-name">Performance Review</div>
+        <div class="resource-desc">Turn your wins into a raise positioning and promotion script.</div>
       </a>
 
-      <a href="/review.html" class="tool-card" id="card-3">
-        <div class="tool-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="resource-card coming-soon" id="res-3">
+        <div class="resource-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
-        <span class="tool-tag">$4.99</span>
-        <div class="tool-name">Performance Review</div>
-        <div class="tool-desc">Paste your accomplishments and get a full self-evaluation, raise positioning, and promotion script.</div>
-        <div class="tool-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-      </a>
-
-      <div class="tool-card coming-soon" id="card-4">
-        <div class="tool-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <span class="tool-tag soon">Coming soon</span>
-        <div class="tool-name">Resume Analyzer</div>
-        <div class="tool-desc">Get brutally honest feedback on your resume and what to fix to land more interviews.</div>
+        <span class="resource-tag">Coming soon</span>
+        <div class="resource-name">Resume Analyzer</div>
+        <div class="resource-desc">Brutally honest feedback on what to fix to land more interviews.</div>
       </div>
     </div>
   </div>
@@ -140,7 +201,7 @@
   if (seen) {
     document.getElementById('intro').style.display = 'none';
     document.getElementById('app').style.opacity = '1';
-    showCards();
+    showElements();
   } else {
     sessionStorage.setItem('klearer-intro', '1');
     runIntro();
@@ -158,20 +219,84 @@
     setTimeout(() => {
       intro.classList.add('hide');
       app.classList.add('show');
-      setTimeout(() => { intro.style.display='none'; showCards(); }, 600);
+      setTimeout(() => { intro.style.display='none'; showElements(); }, 600);
     }, 3000);
   }
 
-  function showCards() {
-    ['card-1','card-2','card-3','card-4'].forEach((id, i) => {
+  function showElements() {
+    setTimeout(() => { document.getElementById('engine-wrap').classList.add('visible'); }, 100);
+    setTimeout(() => { document.getElementById('resources-label').classList.add('visible'); }, 300);
+    ['res-1','res-2','res-3'].forEach((id, i) => {
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) { el.style.transition='opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s'; el.classList.add('visible'); }
-      }, i * 120);
+        if (el) { el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, background 0.2s'; el.classList.add('visible'); }
+      }, 400 + i * 100);
     });
   }
 
-  document.querySelectorAll('.tool-card:not(.coming-soon)').forEach(card => {
+  // DOC TYPE PILLS
+  let selectedType = 'offer-letter';
+  document.getElementById('doc-types').addEventListener('click', function(e) {
+    const pill = e.target.closest('.doc-pill');
+    if (!pill) return;
+    document.querySelectorAll('.doc-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    selectedType = pill.dataset.type;
+    checkReady();
+  });
+
+  // FILE UPLOAD
+  let hasFile = false;
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.getElementById('file-input');
+  const filenameEl = document.getElementById('upload-filename');
+
+  uploadZone.addEventListener('click', () => fileInput.click());
+  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  function handleFile(file) {
+    hasFile = true;
+    filenameEl.textContent = file.name;
+    checkReady();
+  }
+
+  function checkReady() {
+    const btn = document.getElementById('analyze-btn');
+    if (hasFile) btn.classList.add('ready');
+  }
+
+  // ROUTING
+  const routes = {
+    'offer-letter': '/offer.html',
+    'lease': '/lease.html',
+    'insurance': '/insurance.html',
+    'medical': '/medical.html',
+    'bank': '/bank.html',
+    'car': '/car.html',
+    'student-loans': '/student-loans.html',
+    'terms': '/terms.html',
+    'hoa': '/hoa.html',
+    'other': '/offer.html'
+  };
+
+  document.getElementById('analyze-btn').addEventListener('click', function() {
+    if (!hasFile) return;
+    const dest = routes[selectedType] || '/offer.html';
+    document.getElementById('app').style.opacity = '0';
+    setTimeout(() => { window.location.href = dest; }, 400);
+  });
+
+  document.querySelectorAll('.resource-card:not(.coming-soon)').forEach(card => {
     card.addEventListener('click', function(e) {
       e.preventDefault();
       const href = this.getAttribute('href');
