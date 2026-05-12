@@ -18,8 +18,6 @@
     html, body { height: 100%; }
     body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(46,168,126,0.07) 0%, transparent 60%); pointer-events: none; z-index: 0; }
-
-    /* INTRO */
     #intro { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--navy); transition: opacity 0.6s ease; }
     #intro.hide { opacity: 0; pointer-events: none; }
     .intro-logo { opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; margin-bottom: 1.5rem; }
@@ -27,29 +25,22 @@
     .intro-tagline { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; text-align: center; opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; line-height: 1.3; }
     .intro-tagline.show { opacity: 1; transform: translateY(0); }
     .intro-klearer { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.5px; font-style: italic; color: var(--green); opacity: 0; transform: translateY(8px); transition: opacity 0.6s ease, transform 0.6s ease; margin-top: 0.25rem; text-align: center; }
-
-    /* APP */
     #app { opacity: 0; transition: opacity 0.6s ease; position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
     #app.show { opacity: 1; }
-
-    /* NAV */
     nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 60px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.85); backdrop-filter: blur(12px); }
     .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; }
     .logo em { font-style: italic; color: var(--green); }
-
-    /* LAYOUT */
     .container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
-
-    /* HERO */
     .hero { padding: 5rem 0 2.5rem; text-align: center; }
     .hero-tagline { font-family: 'Instrument Serif', serif; font-size: 42px; font-weight: 400; letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.15; }
     .hero-tagline em { font-style: italic; color: var(--green); }
     .hero-sub { font-size: 15px; color: var(--text-2); font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.7; }
-
-    /* UPLOAD ENGINE */
     .engine-wrap { padding: 2rem 0 1.25rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .engine-wrap.visible { opacity: 1; transform: translateY(0); }
     .engine { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
+    .input-tabs { display: flex; margin-bottom: 1.25rem; background: var(--navy-3); border-radius: 10px; padding: 3px; }
+    .input-tab { flex: 1; text-align: center; font-size: 13px; font-weight: 400; color: var(--text-3); padding: 7px 0; border-radius: 8px; cursor: pointer; transition: color 0.2s, background 0.2s; border: none; background: transparent; font-family: 'DM Sans', sans-serif; }
+    .input-tab.active { background: var(--navy-2); color: var(--text); border: 1px solid var(--border); }
     .upload-zone { border: 1px dashed rgba(46,168,126,0.35); border-radius: 14px; padding: 2.75rem 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 1.25rem; }
     .upload-zone:hover { border-color: rgba(46,168,126,0.7); background: rgba(46,168,126,0.03); }
     .upload-zone.dragover { border-color: var(--green); background: rgba(46,168,126,0.06); }
@@ -57,6 +48,10 @@
     .upload-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
     .upload-sub { font-size: 13px; color: var(--text-3); font-weight: 300; }
     .upload-filename { font-size: 13px; color: var(--green); margin-top: 8px; font-weight: 400; }
+    .paste-zone { display: none; margin-bottom: 1.25rem; }
+    .paste-zone textarea { width: 100%; height: 180px; background: var(--navy-3); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); resize: none; outline: none; line-height: 1.6; transition: border-color 0.2s; font-weight: 300; }
+    .paste-zone textarea::placeholder { color: var(--text-3); }
+    .paste-zone textarea:focus { border-color: rgba(46,168,126,0.4); }
     .doc-types { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1.25rem; }
     .doc-pill { font-size: 12px; color: var(--text-3); background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 14px; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; font-family: 'DM Sans', sans-serif; }
     .doc-pill:hover { color: var(--text-2); border-color: rgba(255,255,255,0.2); }
@@ -66,8 +61,6 @@
     .analyze-btn.ready:hover { opacity: 0.9; transform: translateY(-1px); }
     .engine-label { text-align: center; font-size: 12px; color: var(--text-3); margin-bottom: 3.5rem; margin-top: 0.75rem; }
     .engine-label span { color: var(--green); }
-
-    /* ADDITIONAL RESOURCES */
     .resources-label { text-align: center; font-size: 11px; font-weight: 500; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.25rem; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .resources-label.visible { opacity: 1; transform: translateY(0); }
     .resources { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding-bottom: 5rem; }
@@ -81,13 +74,9 @@
     .resource-tag { display: inline-block; font-size: 10px; color: var(--text-3); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 3px 10px; margin-bottom: 0.6rem; }
     .resource-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: 'Instrument Serif', serif; letter-spacing: -0.2px; }
     .resource-desc { font-size: 12px; color: var(--text-2); font-weight: 300; line-height: 1.55; flex: 1; }
-
-    /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: auto; }
     .footer-inner { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
-
-    /* RESPONSIVE */
     @media (max-width: 600px) {
       .resources { grid-template-columns: 1fr; }
       .hero-tagline { font-size: 32px; }
@@ -119,17 +108,26 @@
       <p class="hero-sub">Upload anything you've been handed and told to sign. Klearer reads it — and tells you what actually matters.</p>
     </div>
 
-    <!-- UPLOAD ENGINE -->
     <div class="engine-wrap" id="engine-wrap">
       <div class="engine">
+
+        <div class="input-tabs">
+          <button class="input-tab active" id="tab-upload" onclick="switchTab('upload')">Upload file</button>
+          <button class="input-tab" id="tab-paste" onclick="switchTab('paste')">Paste text</button>
+        </div>
+
         <div class="upload-zone" id="upload-zone">
           <div class="upload-icon">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           </div>
           <div class="upload-title">Drop your document here</div>
-          <div class="upload-sub">PDF, Word, or paste text — any document, any type</div>
+          <div class="upload-sub">PDF, Word, or .txt — any document, any type</div>
           <div class="upload-filename" id="upload-filename"></div>
           <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none">
+        </div>
+
+        <div class="paste-zone" id="paste-zone">
+          <textarea id="paste-input" placeholder="Paste your document text here..."></textarea>
         </div>
 
         <div class="doc-types" id="doc-types">
@@ -153,7 +151,6 @@
       <div class="engine-label">Powered by <span>Klearer AI</span> — one engine, every document</div>
     </div>
 
-    <!-- ADDITIONAL RESOURCES -->
     <div class="resources-label" id="resources-label">Additional resources</div>
     <div class="resources">
       <a href="/interview.html" class="resource-card" id="res-1">
@@ -164,7 +161,6 @@
         <div class="resource-name">Interview Prep</div>
         <div class="resource-desc">Personalized questions based on the job and live company research.</div>
       </a>
-
       <a href="/review.html" class="resource-card" id="res-2">
         <div class="resource-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -173,7 +169,6 @@
         <div class="resource-name">Performance Review</div>
         <div class="resource-desc">Turn your wins into a raise positioning and promotion script.</div>
       </a>
-
       <div class="resource-card coming-soon" id="res-3">
         <div class="resource-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -234,6 +229,17 @@
     });
   }
 
+  // TAB TOGGLE
+  let activeTab = 'upload';
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+    document.getElementById('tab-paste').classList.toggle('active', tab === 'paste');
+    document.getElementById('upload-zone').style.display = tab === 'upload' ? 'block' : 'none';
+    document.getElementById('paste-zone').style.display = tab === 'paste' ? 'block' : 'none';
+    checkReady();
+  }
+
   // DOC TYPE PILLS
   let selectedType = 'offer-letter';
   document.getElementById('doc-types').addEventListener('click', function(e) {
@@ -242,7 +248,6 @@
     document.querySelectorAll('.doc-pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     selectedType = pill.dataset.type;
-    checkReady();
   });
 
   // FILE UPLOAD
@@ -270,9 +275,13 @@
     checkReady();
   }
 
+  // PASTE INPUT
+  document.getElementById('paste-input').addEventListener('input', checkReady);
+
   function checkReady() {
-    const btn = document.getElementById('analyze-btn');
-    if (hasFile) btn.classList.add('ready');
+    const pasteVal = document.getElementById('paste-input').value.trim();
+    const ready = (activeTab === 'upload' && hasFile) || (activeTab === 'paste' && pasteVal.length > 20);
+    document.getElementById('analyze-btn').classList.toggle('ready', ready);
   }
 
   // ROUTING
@@ -290,7 +299,16 @@
   };
 
   document.getElementById('analyze-btn').addEventListener('click', function() {
-    if (!hasFile) return;
+    const pasteVal = document.getElementById('paste-input').value.trim();
+    const ready = (activeTab === 'upload' && hasFile) || (activeTab === 'paste' && pasteVal.length > 20);
+    if (!ready) return;
+    if (activeTab === 'paste') {
+      sessionStorage.setItem('klearer-paste', pasteVal);
+      sessionStorage.removeItem('klearer-file');
+    } else {
+      sessionStorage.removeItem('klearer-paste');
+    }
+    sessionStorage.setItem('klearer-doc-type', selectedType);
     const dest = routes[selectedType] || '/offer.html';
     document.getElementById('app').style.opacity = '0';
     setTimeout(() => { window.location.href = dest; }, 400);
