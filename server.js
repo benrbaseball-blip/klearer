@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -23,6 +25,43 @@ function parseJSON(raw) {
   if (start === -1 || end === -1) throw new Error('No JSON found');
   return JSON.parse(clean.slice(start, end + 1));
 }
+
+// TEXT EXTRACTION ENDPOINT
+app.post('/api/extract-text', upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
+  const { mimetype, originalname, buffer } = req.file;
+  const ext = path.extname(originalname).toLowerCase();
+
+  try {
+    let text = '';
+
+    if (ext === '.pdf' || mimetype === 'application/pdf') {
+      const pdfParse = require('pdf-parse');
+      const data = await pdfParse(buffer);
+      text = data.text;
+    } else if (ext === '.docx' || mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      const mammoth = require('mammoth');
+      const result = await mammoth.extractRawText({ buffer });
+      text = result.value;
+    } else if (ext === '.doc') {
+      const mammoth = require('mammoth');
+      const result = await mammoth.extractRawText({ buffer });
+      text = result.value;
+    } else if (ext === '.txt' || mimetype === 'text/plain') {
+      text = buffer.toString('utf-8');
+    } else {
+      return res.status(400).json({ error: 'Unsupported file type. Please upload a PDF, Word doc, or text file.' });
+    }
+
+    if (!text || text.trim().length < 50) {
+      return res.status(400).json({ error: 'Could not extract enough text from this file. Try pasting the text instead.' });
+    }
+
+    res.json({ text: text.trim() });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read file: ' + err.message });
+  }
+});
 
 app.get('/api/stripe-key', (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '' });
