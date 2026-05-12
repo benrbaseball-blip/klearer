@@ -38,27 +38,16 @@
     .engine-wrap { padding: 2rem 0 1.25rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .engine-wrap.visible { opacity: 1; transform: translateY(0); }
     .engine { background: var(--navy-2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; }
-    .input-tabs { display: flex; margin-bottom: 1.25rem; background: var(--navy-3); border-radius: 10px; padding: 3px; }
-    .input-tab { flex: 1; text-align: center; font-size: 13px; font-weight: 400; color: var(--text-3); padding: 7px 0; border-radius: 8px; cursor: pointer; transition: color 0.2s, background 0.2s; border: none; background: transparent; font-family: 'DM Sans', sans-serif; }
-    .input-tab.active { background: var(--navy-2); color: var(--text); border: 1px solid var(--border); }
-    .upload-zone { border: 1px dashed rgba(46,168,126,0.35); border-radius: 14px; padding: 2.75rem 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 1.25rem; }
-    .upload-zone:hover { border-color: rgba(46,168,126,0.7); background: rgba(46,168,126,0.03); }
-    .upload-zone.dragover { border-color: var(--green); background: rgba(46,168,126,0.06); }
-    .upload-icon { margin-bottom: 0.75rem; color: var(--green); }
-    .upload-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-    .upload-sub { font-size: 13px; color: var(--text-3); font-weight: 300; }
-    .upload-filename { font-size: 13px; color: var(--green); margin-top: 8px; font-weight: 400; }
-    .paste-zone { display: none; margin-bottom: 1.25rem; }
-    .paste-zone textarea { width: 100%; height: 180px; background: var(--navy-3); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); resize: none; outline: none; line-height: 1.6; transition: border-color 0.2s; font-weight: 300; }
-    .paste-zone textarea::placeholder { color: var(--text-3); }
-    .paste-zone textarea:focus { border-color: rgba(46,168,126,0.4); }
-    .doc-types { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1.25rem; }
-    .doc-pill { font-size: 12px; color: var(--text-3); background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 14px; cursor: pointer; transition: color 0.2s, border-color 0.2s, background 0.2s; font-family: 'DM Sans', sans-serif; }
-    .doc-pill:hover { color: var(--text-2); border-color: rgba(255,255,255,0.2); }
-    .doc-pill.active { color: var(--green); background: rgba(46,168,126,0.08); border-color: rgba(46,168,126,0.35); }
-    .analyze-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; opacity: 0.45; pointer-events: none; }
-    .analyze-btn.ready { opacity: 1; pointer-events: all; }
-    .analyze-btn.ready:hover { opacity: 0.9; transform: translateY(-1px); }
+    .engine-heading { font-size: 13px; color: var(--text-3); margin-bottom: 1rem; text-align: center; }
+    .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+    .doc-card { background: var(--navy-3); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; display: flex; align-items: center; gap: 10px; }
+    .doc-card:hover { border-color: rgba(46,168,126,0.4); background: rgba(46,168,126,0.05); }
+    .doc-card.active { border-color: var(--green); background: rgba(46,168,126,0.08); }
+    .doc-card-icon { font-size: 18px; flex-shrink: 0; }
+    .doc-card-name { font-size: 13px; font-weight: 500; color: var(--text); }
+    .doc-card-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .go-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; }
+    .go-btn:hover { opacity: 0.9; transform: translateY(-1px); }
     .engine-label { text-align: center; font-size: 12px; color: var(--text-3); margin-bottom: 3.5rem; margin-top: 0.75rem; }
     .engine-label span { color: var(--green); }
     .resources-label { text-align: center; font-size: 11px; font-weight: 500; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.25rem; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
@@ -79,6 +68,7 @@
     .footer-right { font-size: 12px; color: var(--text-3); font-weight: 300; }
     @media (max-width: 600px) {
       .resources { grid-template-columns: 1fr; }
+      .doc-grid { grid-template-columns: 1fr; }
       .hero-tagline { font-size: 32px; }
       .intro-tagline, .intro-klearer { font-size: 22px; padding: 0 2rem; }
     }
@@ -110,42 +100,52 @@
 
     <div class="engine-wrap" id="engine-wrap">
       <div class="engine">
-
-        <div class="input-tabs">
-          <button class="input-tab active" id="tab-upload" onclick="switchTab('upload')">Upload file</button>
-          <button class="input-tab" id="tab-paste" onclick="switchTab('paste')">Paste text</button>
-        </div>
-
-        <div class="upload-zone" id="upload-zone">
-          <div class="upload-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div class="engine-heading">What are you trying to understand?</div>
+        <div class="doc-grid">
+          <div class="doc-card active" data-dest="/offer.html">
+            <span class="doc-card-icon">📄</span>
+            <div><div class="doc-card-name">Offer letter</div><div class="doc-card-sub">Salary, benefits, fine print</div></div>
           </div>
-          <div class="upload-title">Drop your document here</div>
-          <div class="upload-sub">PDF, Word, or .txt — any document, any type</div>
-          <div class="upload-filename" id="upload-filename"></div>
-          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none">
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🏠</span>
+            <div><div class="doc-card-name">Lease agreement</div><div class="doc-card-sub">Clauses, deposits, penalties</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🛡️</span>
+            <div><div class="doc-card-name">Insurance policy</div><div class="doc-card-sub">Coverage, exclusions, limits</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🏥</span>
+            <div><div class="doc-card-name">Medical forms</div><div class="doc-card-sub">What you're agreeing to</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🏦</span>
+            <div><div class="doc-card-name">Bank contract</div><div class="doc-card-sub">Fees, terms, obligations</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🚗</span>
+            <div><div class="doc-card-name">Car contract</div><div class="doc-card-sub">Hidden fees, add-ons</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🎓</span>
+            <div><div class="doc-card-name">Student loans</div><div class="doc-card-sub">Rates, terms, repayment</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">📋</span>
+            <div><div class="doc-card-name">Terms & conditions</div><div class="doc-card-sub">What you're really agreeing to</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">🏘️</span>
+            <div><div class="doc-card-name">HOA agreement</div><div class="doc-card-sub">Rules, fees, restrictions</div></div>
+          </div>
+          <div class="doc-card" data-dest="/offer.html">
+            <span class="doc-card-icon">📎</span>
+            <div><div class="doc-card-name">Anything else</div><div class="doc-card-sub">Any document, any type</div></div>
+          </div>
         </div>
-
-        <div class="paste-zone" id="paste-zone">
-          <textarea id="paste-input" placeholder="Paste your document text here..."></textarea>
-        </div>
-
-        <div class="doc-types" id="doc-types">
-          <button class="doc-pill active" data-type="offer-letter">Offer letter</button>
-          <button class="doc-pill" data-type="lease">Lease agreement</button>
-          <button class="doc-pill" data-type="insurance">Insurance policy</button>
-          <button class="doc-pill" data-type="medical">Medical forms</button>
-          <button class="doc-pill" data-type="bank">Bank contract</button>
-          <button class="doc-pill" data-type="car">Car contract</button>
-          <button class="doc-pill" data-type="student-loans">Student loans</button>
-          <button class="doc-pill" data-type="terms">Terms & conditions</button>
-          <button class="doc-pill" data-type="hoa">HOA agreement</button>
-          <button class="doc-pill" data-type="other">Anything else</button>
-        </div>
-
-        <button class="analyze-btn" id="analyze-btn">
+        <button class="go-btn" id="go-btn">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          Analyze document
+          Get started
         </button>
       </div>
       <div class="engine-label">Powered by <span>Klearer AI</span> — one engine, every document</div>
@@ -229,91 +229,32 @@
     });
   }
 
-  // TAB TOGGLE
-  let activeTab = 'upload';
-  function switchTab(tab) {
-    activeTab = tab;
-    document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
-    document.getElementById('tab-paste').classList.toggle('active', tab === 'paste');
-    document.getElementById('upload-zone').style.display = tab === 'upload' ? 'block' : 'none';
-    document.getElementById('paste-zone').style.display = tab === 'paste' ? 'block' : 'none';
-    checkReady();
-  }
-
-  // DOC TYPE PILLS
+  // DOC CARD SELECTION
+  let selectedDest = '/offer.html';
   let selectedType = 'offer-letter';
-  document.getElementById('doc-types').addEventListener('click', function(e) {
-    const pill = e.target.closest('.doc-pill');
-    if (!pill) return;
-    document.querySelectorAll('.doc-pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-    selectedType = pill.dataset.type;
-  });
 
-  // FILE UPLOAD
-  let hasFile = false;
-  const uploadZone = document.getElementById('upload-zone');
-  const fileInput = document.getElementById('file-input');
-  const filenameEl = document.getElementById('upload-filename');
-
-  uploadZone.addEventListener('click', () => fileInput.click());
-  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-  uploadZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  });
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) handleFile(fileInput.files[0]);
-  });
-
-  function handleFile(file) {
-    hasFile = true;
-    filenameEl.textContent = file.name;
-    checkReady();
-  }
-
-  // PASTE INPUT
-  document.getElementById('paste-input').addEventListener('input', checkReady);
-
-  function checkReady() {
-    const pasteVal = document.getElementById('paste-input').value.trim();
-    const ready = (activeTab === 'upload' && hasFile) || (activeTab === 'paste' && pasteVal.length > 20);
-    document.getElementById('analyze-btn').classList.toggle('ready', ready);
-  }
-
-  // ROUTING
-  const routes = {
-    'offer-letter': '/offer.html',
-    'lease': '/lease.html',
-    'insurance': '/insurance.html',
-    'medical': '/medical.html',
-    'bank': '/bank.html',
-    'car': '/car.html',
-    'student-loans': '/student-loans.html',
-    'terms': '/terms.html',
-    'hoa': '/hoa.html',
-    'other': '/offer.html'
+  const typeMap = {
+    0: 'offer-letter', 1: 'lease', 2: 'insurance', 3: 'medical',
+    4: 'bank', 5: 'car', 6: 'student-loans', 7: 'terms', 8: 'hoa', 9: 'other'
   };
 
-  document.getElementById('analyze-btn').addEventListener('click', function() {
-    const pasteVal = document.getElementById('paste-input').value.trim();
-    const ready = (activeTab === 'upload' && hasFile) || (activeTab === 'paste' && pasteVal.length > 20);
-    if (!ready) return;
-    if (activeTab === 'paste') {
-      sessionStorage.setItem('klearer-paste', pasteVal);
-      sessionStorage.removeItem('klearer-file');
-    } else {
-      sessionStorage.removeItem('klearer-paste');
-    }
-    sessionStorage.setItem('klearer-doc-type', selectedType);
-    const dest = routes[selectedType] || '/offer.html';
-    document.getElementById('app').style.opacity = '0';
-    setTimeout(() => { window.location.href = dest; }, 400);
+  document.querySelectorAll('.doc-card').forEach((card, i) => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedDest = card.dataset.dest;
+      selectedType = typeMap[i];
+    });
   });
 
+  // GO BUTTON
+  document.getElementById('go-btn').addEventListener('click', () => {
+    sessionStorage.setItem('klearer-doc-type', selectedType);
+    document.getElementById('app').style.opacity = '0';
+    setTimeout(() => { window.location.href = selectedDest; }, 400);
+  });
+
+  // RESOURCE CARD CLICKS
   document.querySelectorAll('.resource-card:not(.coming-soon)').forEach(card => {
     card.addEventListener('click', function(e) {
       e.preventDefault();
