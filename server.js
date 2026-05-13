@@ -69,31 +69,51 @@ app.get('/api/stripe-key', (req, res) => {
 
 app.post('/api/analyze', async (req, res) => {
   const { text } = req.body;
-  if (!text || text.length < 50) return res.status(400).json({ error: 'Offer letter text is too short.' });
+  if (!text || text.length < 50) return res.status(400).json({ error: 'Document text is too short.' });
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
-  const prompt = `You are an expert career advisor. Analyze this job offer letter and return ONLY a valid JSON object — no markdown, no explanation.
 
-Schema:
+  const prompt = `You are Klearer, an expert document analyst. Analyze the document below and return ONLY a valid JSON object — no markdown, no explanation.
+
+First identify what type of document this is. Then extract the most important information a regular person needs to know before signing or acting on it.
+
+IMPORTANT: For every insight, flag, and fact — include the page number where it appears in the document (e.g. "page 2" or "page 4, section 3.2"). If the document has no page numbers, reference the section or paragraph instead.
+
+Return this exact JSON schema:
 {
-  "role": "job title",
-  "company": "company name",
-  "stats": [
-    { "label": "Base salary", "value": "$X,XXX", "highlight": true },
-    { "label": "Total comp (est.)", "value": "$X,XXX", "highlight": true },
-    { "label": "PTO", "value": "X days" },
-    { "label": "Start date", "value": "Month Day or Not mentioned" }
+  "doc_type": "offer_letter|lease|insurance|car_contract|medical|bank|student_loan|terms|hoa|other",
+  "doc_title": "short human-readable title e.g. 'Lease Agreement — 123 Main St' or 'Offer Letter — Google'",
+  "facts": [
+    { "label": "key fact label", "value": "the value", "location": "page X" }
   ],
-  "compensation": [{ "label": "item name", "description": "plain english explanation", "value": "amount" }],
-  "benefits": [{ "label": "benefit name", "description": "plain english explanation", "badge": "good|warn|danger|neutral", "badgeText": "Strong|Average|Below avg|Great|Watch out" }],
-  "flags": [{ "type": "warn|info|good", "title": "short title", "detail": "plain english explanation" }]
+  "good": [
+    { "title": "positive thing", "detail": "plain english explanation", "location": "page X" }
+  ],
+  "watch_out": [
+    { "title": "red flag or risk", "detail": "plain english explanation of why this matters", "location": "page X", "severity": "high|medium|low" }
+  ],
+  "plain_english": "2-3 sentence plain English summary of what this document actually means for the person signing it",
+  "next_moves": [
+    "specific action item the person should take"
+  ]
 }
 
-Offer letter:
-${text.slice(0, 4000)}`;
+Rules:
+- facts: pull 4-6 key numbers, dates, names — the things that matter most
+- good: 2-4 genuinely positive things working in their favor
+- watch_out: 2-5 risks or red flags, ordered by severity
+- plain_english: write like you're texting a friend, not writing a legal brief
+- next_moves: 1-3 concrete specific actions, not generic advice
+- location: always include page number or section reference for every item
+- If page numbers aren't visible, reference the section heading or clause number
+
+Document:
+${text.slice(0, 6000)}`;
+
   try {
-    const raw = await callClaude(apiKey, prompt);
-    res.json(parseJSON(raw));
+    const raw = await callClaude(apiKey, prompt, 2000);
+    const data = parseJSON(raw);
+    res.json(data);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
