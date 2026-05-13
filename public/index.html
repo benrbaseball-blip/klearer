@@ -114,7 +114,33 @@
     .footer-inner { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     .footer-k { width: 28px; height: 28px; border-radius: 50%; border: 0.5px solid rgba(46,168,126,0.25); background: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--green); font-style: italic; font-weight: 500; font-family: 'Instrument Serif', serif; }
     .footer-right { font-size: 11px; color: var(--text-3); font-weight: 300; }
-
+/* SHARE BUTTON */
+    .share-btn { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 400; color: var(--text-2); background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.12); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; backdrop-filter: blur(8px); }
+    .share-btn:hover { background: rgba(255,255,255,0.8); color: var(--green); border-color: rgba(46,168,126,0.2); }
+    .share-btn svg { opacity: 0.6; }
+    .share-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 0 16px 24px; }
+    .share-overlay.open { opacity: 1; pointer-events: all; }
+    .share-overlay-bg { position: absolute; inset: 0; background: rgba(26,46,37,0.15); backdrop-filter: blur(4px); }
+    .share-modal { background: rgba(255,255,255,0.75); border: 0.5px solid rgba(255,255,255,0.9); border-radius: 28px; padding: 28px 24px; width: 100%; max-width: 480px; position: relative; z-index: 1; backdrop-filter: blur(24px); box-shadow: 0 16px 48px rgba(26,46,37,0.12), 0 1px 0 rgba(255,255,255,0.9) inset; transform: translateY(20px); transition: transform 0.3s ease; }
+    .share-overlay.open .share-modal { transform: translateY(0); }
+    .share-modal::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, transparent); }
+    .share-handle { width: 36px; height: 4px; background: rgba(26,46,37,0.1); border-radius: 2px; margin: 0 auto 20px; }
+    .share-title { font-family: 'Instrument Serif', serif; font-size: 22px; font-weight: 400; color: var(--text); letter-spacing: -0.5px; margin-bottom: 6px; }
+    .share-sub { font-size: 13px; color: var(--text-2); font-weight: 300; margin-bottom: 20px; line-height: 1.5; }
+    .share-link-box { background: rgba(26,46,37,0.04); border: 0.5px solid rgba(26,46,37,0.1); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--text-2); margin-bottom: 16px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .share-link-url { color: var(--green); font-weight: 400; }
+    .share-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .share-option { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.6); border: 0.5px solid rgba(26,46,37,0.08); border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; text-align: left; }
+    .share-option:hover { background: rgba(255,255,255,0.9); transform: translateY(-1px); }
+    .share-option-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .share-option-icon.copy { background: rgba(46,168,126,0.1); }
+    .share-option-icon.text { background: rgba(46,168,126,0.1); }
+    .share-option-icon.email { background: rgba(46,168,126,0.1); }
+    .share-option-icon.twitter { background: rgba(0,0,0,0.06); }
+    .share-option-label { font-size: 13px; font-weight: 500; color: var(--text); display: block; margin-bottom: 2px; }
+    .share-option-sub { font-size: 11px; color: var(--text-3); }
+    .share-close { width: 100%; background: rgba(26,46,37,0.05); border: none; border-radius: 12px; padding: 12px; font-size: 13px; color: var(--text-2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .share-close:hover { background: rgba(26,46,37,0.08); }
     @media (max-width: 600px) {
       .resources { grid-template-columns: 1fr; }
       .hero-tagline { font-size: 36px; }
@@ -142,8 +168,12 @@
 </div>
 
 <div id="app">
-  <nav>
+<nav>
     <a class="logo" href="/" onclick="sessionStorage.removeItem('klearer-intro')">klear<em>er</em></a>
+    <button class="share-btn" onclick="openShare()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share Klearer
+    </button>
   </nav>
 
   <div class="container">
@@ -381,6 +411,104 @@
       setTimeout(() => { window.location.href = href; }, 400);
     });
   });
+</script> <div class="share-overlay" id="share-overlay" onclick="handleOverlayClick(event)">
+  <div class="share-overlay-bg"></div>
+  <div class="share-modal">
+    <div class="share-handle"></div>
+    <div class="share-title">Share Klearer</div>
+    <div class="share-sub">Stop signing things you don't understand. Share Klearer with someone who needs it.</div>
+    <div class="share-link-box">
+      <span class="share-link-url">klearer.vercel.app</span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+    </div>
+    <div class="share-options">
+      <button class="share-option" onclick="shareCopy()">
+        <div class="share-option-icon copy" id="copy-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+        <div>
+          <span class="share-option-label" id="copy-label">Copy link</span>
+          <span class="share-option-sub">Paste anywhere</span>
+        </div>
+      </button>
+      <button class="share-option" onclick="shareText()">
+        <div class="share-option-icon text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <span class="share-option-label">Text a friend</span>
+          <span class="share-option-sub">Open Messages</span>
+        </div>
+      </button>
+      <button class="share-option" onclick="shareEmail()">
+        <div class="share-option-icon email">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <span class="share-option-label">Send an email</span>
+          <span class="share-option-sub">Open Mail</span>
+        </div>
+      </button>
+      <button class="share-option" onclick="shareTwitter()">
+        <div class="share-option-icon twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <div>
+          <span class="share-option-label">Post on X</span>
+          <span class="share-option-sub">Share to Twitter</span>
+        </div>
+      </button>
+    </div>
+    <button class="share-close" onclick="closeShare()">Close</button>
+  </div>
+</div>
+
+<script>
+  const KLEARER_URL = 'https://klearer.vercel.app';
+  const SHARE_MSG = 'Stop signing things you don\'t understand. Upload any document and AI tells you exactly what matters — leases, insurance, offer letters, car contracts, anything. Page numbers included.';
+
+  function openShare() {
+    if (navigator.share) {
+      navigator.share({ title: 'Klearer', text: SHARE_MSG, url: KLEARER_URL }).catch(() => {});
+      return;
+    }
+    document.getElementById('share-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeShare() {
+    document.getElementById('share-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('share-overlay') || e.target.classList.contains('share-overlay-bg')) closeShare();
+  }
+
+  function shareCopy() {
+    navigator.clipboard.writeText(KLEARER_URL).then(() => {
+      const label = document.getElementById('copy-label');
+      const icon = document.getElementById('copy-icon');
+      label.textContent = 'Copied!';
+      icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(() => {
+        label.textContent = 'Copy link';
+        icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+      }, 2000);
+    });
+  }
+
+  function shareText() {
+    window.open(`sms:?body=${encodeURIComponent(SHARE_MSG + ' ' + KLEARER_URL)}`);
+  }
+
+  function shareEmail() {
+    window.open(`mailto:?subject=${encodeURIComponent('You need to see this')}&body=${encodeURIComponent(SHARE_MSG + '\n\n' + KLEARER_URL)}`);
+  }
+
+  function shareTwitter() {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_MSG + ' ' + KLEARER_URL)}`, '_blank');
+  }
 </script>
 </body>
 </html>
