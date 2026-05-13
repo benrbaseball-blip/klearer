@@ -62,7 +62,35 @@ app.post('/api/extract-text', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Failed to read file: ' + err.message });
   }
 });
-
+app.post('/api/extract-image-text', upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
+  try {
+    const base64 = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64 } },
+            { type: 'text', text: 'Please extract ALL text from this document image exactly as it appears. Include every word, number, date, and clause. Preserve the structure as much as possible. Return only the extracted text, nothing else.' }
+          ]
+        }]
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || 'API error');
+    const text = data.content.map(b => b.text || '').join('');
+    if (!text || text.trim().length < 20) return res.status(400).json({ error: 'Could not extract text from this image. Make sure the document is clearly visible.' });
+    res.json({ text: text.trim() });
+  } catch (err) { res.status(500).json({ error: 'Failed to read image: ' + err.message }); }
+});
 app.get('/api/stripe-key', (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '' });
 });
