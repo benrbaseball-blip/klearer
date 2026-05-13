@@ -173,9 +173,9 @@
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           </div>
           <div class="upload-title">Drop your document here</div>
-          <div class="upload-hint">PDF, Word, or .txt — any document, any type</div>
+          <div class="upload-hint">PDF, Word, .txt, or a photo of your document</div>
           <div class="upload-filename" id="upload-filename"></div>
-          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none">
+          <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.webp,.heic" style="display:none">
         </div>
 
         <div class="paste-zone" id="paste-zone">
@@ -311,13 +311,15 @@
   fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
   function handleFile(file) {
-    const allowed = ['.pdf', '.doc', '.docx', '.txt'];
+    const imageTypes = ['.jpg', '.jpeg', '.png', '.webp', '.heic'];
+    const docTypes = ['.pdf', '.doc', '.docx', '.txt'];
     const ext = '.' + file.name.split('.').pop().toLowerCase();
-    if (!allowed.includes(ext)) return;
-    document.getElementById('upload-filename').textContent = file.name + ' — extracting text...';
+    if (!imageTypes.includes(ext) && !docTypes.includes(ext)) return;
+    document.getElementById('upload-filename').textContent = file.name + ' — reading...';
     const formData = new FormData();
     formData.append('file', file);
-    fetch('/api/extract-text', { method: 'POST', body: formData })
+    const endpoint = imageTypes.includes(ext) ? '/api/extract-image-text' : '/api/extract-text';
+    fetch(endpoint, { method: 'POST', body: formData })
       .then(res => res.json())
       .then(data => {
         if (data.error) { document.getElementById('upload-filename').textContent = ''; return; }
@@ -329,7 +331,6 @@
       })
       .catch(() => { document.getElementById('upload-filename').textContent = ''; });
   }
-
   // PASTE
   document.getElementById('paste-input').addEventListener('input', checkReady);
 
