@@ -340,14 +340,35 @@
   }
 
   // ANALYZE
-  document.getElementById('analyze-btn').addEventListener('click', () => {
+  document.getElementById('analyze-btn').addEventListener('click', async () => {
     const pasteVal = document.getElementById('paste-input').value.trim();
     const text = activeTab === 'paste' ? pasteVal : fileText;
     if (!text) return;
-    if (activeTab === 'paste') sessionStorage.setItem('klearer-paste', pasteVal);
-    sessionStorage.setItem('klearer-offer-text', text);
-    document.getElementById('app').style.opacity = '0';
-    setTimeout(() => { window.location.href = '/offer.html'; }, 400);
+
+    // Show loading state
+    const btn = document.getElementById('analyze-btn');
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyzing...';
+    btn.style.opacity = '0.7';
+    btn.style.pointerEvents = 'none';
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      sessionStorage.setItem('klearer-results', JSON.stringify(data));
+      sessionStorage.setItem('klearer-offer-text', text);
+      document.getElementById('app').style.opacity = '0';
+      setTimeout(() => { window.location.href = '/results.html'; }, 400);
+    } catch (err) {
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyze document';
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'all';
+      alert('Error: ' + err.message);
+    }
   });
 
   // RESOURCE CLICKS
