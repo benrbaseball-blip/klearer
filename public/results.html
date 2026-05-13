@@ -191,8 +191,11 @@
     return labels[type] || 'Document';
   }
 
-  function copyAll(data) {
+  function copyAll() {
     const btn = document.getElementById('copy-btn');
+    const raw = sessionStorage.getItem('klearer-results');
+    if (!raw) return;
+    const data = JSON.parse(raw);
     let text = `★ Analyzed by Klearer — klearer.vercel.app\n\n${data.doc_title}\n\n`;
     text += `=== THE FACTS ===\n${(data.facts||[]).map(f => `${f.label}: ${f.value} (${f.location})`).join('\n')}\n\n`;
     text += `=== THE GOOD ===\n${(data.good||[]).map(g => `${g.title}: ${g.detail} (${g.location})`).join('\n\n')}\n\n`;
@@ -253,7 +256,7 @@
         <div class="plain-english-text">${data.plain_english}</div>
       </div>
 
-      <button class="copy-btn" id="copy-btn" onclick="copyAll(${JSON.stringify(data).replace(/'/g, '&#39;')})">
+      <button class="copy-btn" id="copy-btn" onclick="copyAll()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         Copy full analysis
       </button>
