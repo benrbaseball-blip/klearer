@@ -219,7 +219,7 @@
     show('loading-view');
     const pf = document.getElementById('progress-fill');
     if (pf) { pf.style.animation = 'none'; pf.offsetHeight; pf.style.animation = ''; }
-    const msgs = ['Reading your offer letter...', 'Checking compensation...', 'Reviewing benefits...', 'Flagging fine print...', 'Almost done...'];
+    const msgs = ['Reading your document...', 'Extracting key details...', 'Checking for red flags...', 'Flagging fine print...', 'Almost done...'];
     let mi = 0;
     const msgEl = document.getElementById('loading-msg');
     const msgInt = setInterval(() => { mi = (mi + 1) % msgs.length; if (msgEl) msgEl.textContent = msgs[mi]; }, 1800);
@@ -236,12 +236,13 @@
       sessionStorage.setItem('klearer-offer-text', text);
       document.body.style.opacity = '0';
       document.body.style.transition = 'opacity 0.4s ease';
-      setTimeout(() => { window.location.href = '/offer-results.html'; }, 400);
+      setTimeout(() => { window.location.href = '/results.html'; }, 400);
     } catch (err) {
       clearInterval(msgInt);
       show('input-view');
       showError('Error: ' + err.message);
     }
+  }
   }
 </script>
 </body>
