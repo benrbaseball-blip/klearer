@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klearer — Lease Analysis</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23eef4f0' stroke='%232EA87E' stroke-width='3'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-style='italic' font-size='62' font-weight='700' fill='%232EA87E' text-anchor='middle'%3Ek%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #eef4f0;
+      --green: #2EA87E;
+      --amber: #D4860A;
+      --red: #C0392B;
+      --text: #1a2e25;
+      --text-2: rgba(26,46,37,0.55);
+      --text-3: rgba(26,46,37,0.35);
+      --border-subtle: rgba(46,168,126,0.15);
+    }
+    html, body { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; overflow-x: hidden; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+    .orb-1 { width: 340px; height: 340px; top: -100px; left: -80px; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.7), rgba(46,168,126,0.25) 50%, rgba(46,168,126,0.05) 100%); box-shadow: inset -10px -10px 24px rgba(46,168,126,0.15), inset 5px 5px 14px rgba(255,255,255,0.6); }
+    .orb-2 { width: 240px; height: 240px; top: 80px; right: -50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(46,168,126,0.2) 55%, rgba(46,168,126,0.04) 100%); box-shadow: inset -7px -7px 18px rgba(46,168,126,0.12), inset 4px 4px 12px rgba(255,255,255,0.7); }
+    .orb-3 { width: 180px; height: 180px; bottom: 120px; left: 30px; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(46,168,126,0.22) 55%, rgba(46,168,126,0.05) 100%); box-shadow: inset -6px -6px 16px rgba(46,168,126,0.1), inset 3px 3px 10px rgba(255,255,255,0.65); }
+    .orb-4 { width: 130px; height: 130px; bottom: 60px; right: 80px; background: radial-gradient(circle at 33% 33%, rgba(255,255,255,0.8), rgba(46,168,126,0.18) 55%, rgba(46,168,126,0.04) 100%); box-shadow: inset -4px -4px 14px rgba(46,168,126,0.1), inset 3px 3px 8px rgba(255,255,255,0.7); }
+    nav { position: sticky; top: 0; z-index: 100; padding: 0 2rem; height: 64px; display: flex; align-items: center; border-bottom: 0.5px solid var(--border-subtle); background: rgba(238,244,240,0.7); backdrop-filter: blur(16px); }
+    .logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); text-decoration: none; letter-spacing: -0.3px; }
+    .logo em { font-style: italic; color: var(--green); }
+    .nav-back { font-size: 13px; color: var(--text-3); text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color 0.15s; margin-left: auto; }
+    .nav-back:hover { color: var(--text-2); }
+    .nav-back svg { width: 14px; height: 14px; }
+    .container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 2; }
+    .results { padding: 2.5rem 0 6rem; }
+    .doc-header { margin-bottom: 2rem; }
+    .doc-type-badge { display: inline-block; font-size: 11px; font-weight: 500; color: var(--green); background: rgba(46,168,126,0.1); border: 0.5px solid rgba(46,168,126,0.25); border-radius: 20px; padding: 4px 12px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
+    .doc-title { font-family: 'Instrument Serif', serif; font-size: 32px; font-weight: 400; letter-spacing: -0.5px; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
+    .doc-subtitle { font-size: 13px; color: var(--text-3); font-weight: 300; }
+    .plain-english { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem; backdrop-filter: blur(16px); position: relative; overflow: hidden; }
+    .plain-english::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, transparent); }
+    .plain-english-label { font-size: 10px; font-weight: 500; color: var(--green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .plain-english-text { font-size: 15px; color: var(--text); line-height: 1.7; font-weight: 300; }
+    .copy-btn { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.1); border-radius: 8px; padding: 7px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; margin-bottom: 1rem; backdrop-filter: blur(8px); }
+    .copy-btn:hover { color: var(--green); border-color: rgba(46,168,126,0.3); }
+    .copy-btn.copied { color: var(--green); border-color: rgba(46,168,126,0.3); background: rgba(46,168,126,0.06); }
+    .copy-btn svg { width: 13px; height: 13px; }
+    .section { background: rgba(255,255,255,0.45); border: 0.5px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem; backdrop-filter: blur(16px); position: relative; overflow: hidden; }
+    .section::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, transparent); }
+    .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; }
+    .section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(46,168,126,0.1); }
+    .section-icon.red { background: rgba(192,57,43,0.08); }
+    .section-title { font-size: 13px; font-weight: 500; color: var(--text); }
+    .facts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .fact-item { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.06); border-radius: 12px; padding: 12px 14px; }
+    .fact-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; margin-bottom: 4px; }
+    .fact-value { font-size: 16px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); margin-bottom: 3px; }
+    .fact-location { font-size: 10px; color: rgba(46,168,126,0.7); font-weight: 400; }
+    .good-item { padding: 12px 0; border-bottom: 0.5px solid rgba(26,46,37,0.06); }
+    .good-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .good-item:first-child { padding-top: 0; }
+    .good-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+    .good-title::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 6px rgba(46,168,126,0.4); }
+    .good-detail { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; margin-left: 12px; }
+    .good-location { font-size: 11px; color: rgba(46,168,126,0.6); margin-left: 12px; margin-top: 3px; }
+    .watch-item { padding: 14px 0; border-bottom: 0.5px solid rgba(26,46,37,0.06); }
+    .watch-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .watch-item:first-child { padding-top: 0; }
+    .watch-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+    .severity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .severity-dot.high { background: var(--red); box-shadow: 0 0 6px rgba(192,57,43,0.4); }
+    .severity-dot.medium { background: var(--amber); box-shadow: 0 0 6px rgba(212,134,10,0.4); }
+    .severity-dot.low { background: #8B9E97; }
+    .watch-title { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+    .severity-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+    .severity-badge.high { background: rgba(192,57,43,0.08); color: var(--red); border: 0.5px solid rgba(192,57,43,0.2); }
+    .severity-badge.medium { background: rgba(212,134,10,0.08); color: var(--amber); border: 0.5px solid rgba(212,134,10,0.2); }
+    .severity-badge.low { background: rgba(139,158,151,0.08); color: #8B9E97; border: 0.5px solid rgba(139,158,151,0.2); }
+    .watch-detail { font-size: 13px; color: var(--text-2); line-height: 1.6; font-weight: 300; margin-left: 18px; }
+    .watch-location { font-size: 11px; color: rgba(46,168,126,0.6); margin-left: 18px; margin-top: 4px; }
+    .deposit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .deposit-stat { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.06); border-radius: 12px; padding: 12px 14px; }
+    .deposit-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; margin-bottom: 4px; }
+    .deposit-value { font-size: 16px; font-weight: 500; font-family: 'Instrument Serif', serif; color: var(--text); }
+    .deposit-location { font-size: 10px; color: rgba(46,168,126,0.7); margin-top: 3px; }
+    .list-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 0.5px solid rgba(26,46,37,0.06); font-size: 13px; color: var(--text-2); font-weight: 300; line-height: 1.5; }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:first-child { padding-top: 0; }
+    .list-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 7px; }
+    .list-dot.red { background: var(--red); }
+    .renewal-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .renewal-stat { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.06); border-radius: 12px; padding: 12px 14px; }
+    .renewal-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; margin-bottom: 4px; }
+    .renewal-value { font-size: 14px; font-weight: 500; color: var(--text); }
+    .resp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .resp-col { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(26,46,37,0.06); border-radius: 12px; padding: 14px; }
+    .resp-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .resp-label.tenant { color: var(--amber); }
+    .resp-label.landlord { color: var(--green); }
+    .move-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid rgba(26,46,37,0.06); }
+    .move-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .move-item:first-child { padding-top: 0; }
+    .move-number { width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .move-text { font-size: 14px; color: var(--text); line-height: 1.6; font-weight: 300; }
+    .analyze-again { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(46,168,126,0.25); margin-top: 1.5rem; text-decoration: none; }
+    .analyze-again:hover { opacity: 0.9; transform: translateY(-1px); }
+    footer { border-top: 0.5px solid var(--border-subtle); padding: 1.25rem 0; background: rgba(238,244,240,0.4); backdrop-filter: blur(8px); position: relative; z-index: 2; }
+    .footer-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-k { width: 28px; height: 28px; border-radius: 50%; border: 0.5px solid rgba(46,168,126,0.25); background: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--green); font-style: italic; font-weight: 500; font-family: 'Instrument Serif', serif; }
+    .footer-right { font-size: 11px; color: var(--text-3); font-weight: 300; }
+    @media (max-width: 600px) {
+      .facts-grid, .deposit-grid, .renewal-grid, .resp-grid { grid-template-columns: 1fr; }
+      .doc-title { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
+<nav>
+  <a class="logo" href="/">klear<em>er</em></a>
+  <a class="nav-back" href="/" onclick="goHome(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    All tools
+  </a>
+</nav>
+<div class="container">
+  <div class="results" id="results"></div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-k">k</div>
+    <div class="footer-right">&copy; 2026 Klearer</div>
+  </div>
+</footer>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const raw = sessionStorage.getItem('klearer-results');
+    if (!raw) { window.location.href = '/'; return; }
+    try {
+      const data = JSON.parse(raw);
+      renderResults(data);
+    } catch(e) { window.location.href = '/'; }
+  });
+
+  function goHome(e) {
+    e.preventDefault();
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.4s ease';
+    setTimeout(() => { window.location.href = '/'; }, 400);
+  }
+
+  function copyAll() {
+    const btn = document.getElementById('copy-btn');
+    const raw = sessionStorage.getItem('klearer-results');
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    let text = `★ Analyzed by Klearer — klearer.vercel.app\n\n${data.doc_title}\n\n`;
+    text += `=== PLAIN ENGLISH ===\n${data.plain_english}\n\n`;
+    text += `=== THE FACTS ===\n${(data.facts||[]).map(f => `${f.label}: ${f.value} (${f.location})`).join('\n')}\n\n`;
+    text += `=== SECURITY DEPOSIT ===\nAmount: ${data.deposit?.amount}\nMust return within: ${data.deposit?.must_return_within}\n\n`;
+    text += `=== EARLY TERMINATION ===\nPenalty: ${data.early_termination?.penalty}\nNotice required: ${data.early_termination?.notice_required}\n\n`;
+    text += `=== WHAT TO WATCH OUT FOR ===\n${(data.watch_out||[]).map(w => `[${w.severity.toUpperCase()}] ${w.title}: ${w.detail} (${w.location})`).join('\n\n')}\n\n`;
+    text += `=== NEXT MOVES ===\n${(data.next_moves||[]).map((m,i) => `${i+1}. ${m}`).join('\n')}`;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy full analysis';
+      }, 2000);
+    });
+  }
+
+  function renderResults(data) {
+    const factsHtml = (data.facts||[]).map(f => `
+      <div class="fact-item">
+        <div class="fact-label">${f.label}</div>
+        <div class="fact-value">${f.value}</div>
+        <div class="fact-location">${f.location}</div>
+      </div>`).join('');
+
+    const goodHtml = (data.good||[]).map(g => `
+      <div class="good-item">
+        <div class="good-title">${g.title}</div>
+        <div class="good-detail">${g.detail}</div>
+        <div class="good-location">${g.location}</div>
+      </div>`).join('');
+
+    const watchHtml = (data.watch_out||[]).map(w => `
+      <div class="watch-item">
+        <div class="watch-header">
+          <div class="severity-dot ${w.severity}"></div>
+          <div class="watch-title">${w.title}</div>
+          <span class="severity-badge ${w.severity}">${w.severity}</span>
+        </div>
+        <div class="watch-detail">${w.detail}</div>
+        <div class="watch-location">${w.location}</div>
+      </div>`).join('');
+
+    const depositKeepHtml = (data.deposit?.can_keep_for||[]).map(r => `
+      <div class="list-item">
+        <div class="list-dot red"></div>
+        <span>${r}</span>
+      </div>`).join('');
+
+    const tenantRespHtml = (data.responsibilities?.tenant||[]).map(r => `
+      <div class="list-item">
+        <div class="list-dot"></div>
+        <span>${r}</span>
+      </div>`).join('');
+
+    const landlordRespHtml = (data.responsibilities?.landlord||[]).map(r => `
+      <div class="list-item">
+        <div class="list-dot"></div>
+        <span>${r}</span>
+      </div>`).join('');
+
+    const checklistHtml = (data.move_out_checklist||[]).map((item, i) => `
+      <div class="move-item">
+        <div class="move-number">${i+1}</div>
+        <div class="move-text">${item}</div>
+      </div>`).join('');
+
+    const nextMovesHtml = (data.next_moves||[]).map((m, i) => `
+      <div class="move-item">
+        <div class="move-number">${i+1}</div>
+        <div class="move-text">${m}</div>
+      </div>`).join('');
+
+    document.getElementById('results').innerHTML = `
+      <div class="doc-header">
+        <div class="doc-type-badge">Lease Agreement</div>
+        <div class="doc-title">${data.doc_title || 'Your Lease'}</div>
+        <div class="doc-subtitle">Analyzed by Klearer AI</div>
+      </div>
+
+      <div class="plain-english">
+        <div class="plain-english-label">Plain English</div>
+        <div class="plain-english-text">${data.plain_english}</div>
+      </div>
+
+      <button class="copy-btn" id="copy-btn" onclick="copyAll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy full analysis
+      </button>
+
+      ${factsHtml ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <div class="section-title">The Facts</div>
+        </div>
+        <div class="facts-grid">${factsHtml}</div>
+      </div>` : ''}
+
+      ${goodHtml ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="section-title">The Good</div>
+        </div>
+        ${goodHtml}
+      </div>` : ''}
+
+      ${watchHtml ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon red">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="section-title">What to be aware of</div>
+        </div>
+        ${watchHtml}
+      </div>` : ''}
+
+      ${data.deposit ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div class="section-title">Security Deposit</div>
+        </div>
+        <div class="deposit-grid">
+          <div class="deposit-stat">
+            <div class="deposit-label">Amount</div>
+            <div class="deposit-value">${data.deposit.amount}</div>
+            <div class="deposit-location">${data.deposit.location}</div>
+          </div>
+          <div class="deposit-stat">
+            <div class="deposit-label">Must be returned within</div>
+            <div class="deposit-value">${data.deposit.must_return_within}</div>
+          </div>
+        </div>
+        ${depositKeepHtml ? `
+        <div style="font-size: 11px; font-weight: 500; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Landlord can keep deposit for:</div>
+        ${depositKeepHtml}` : ''}
+      </div>` : ''}
+
+      ${data.early_termination ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon red">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <div class="section-title">Early Termination</div>
+        </div>
+        <div class="deposit-grid">
+          <div class="deposit-stat">
+            <div class="deposit-label">Penalty</div>
+            <div class="deposit-value">${data.early_termination.penalty}</div>
+            <div class="deposit-location">${data.early_termination.location}</div>
+          </div>
+          <div class="deposit-stat">
+            <div class="deposit-label">Notice Required</div>
+            <div class="deposit-value">${data.early_termination.notice_required}</div>
+          </div>
+        </div>
+      </div>` : ''}
+
+      ${data.renewal ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          </div>
+          <div class="section-title">Auto-Renewal</div>
+        </div>
+        <div class="renewal-grid">
+          <div class="renewal-stat">
+            <div class="renewal-label">Auto-Renews</div>
+            <div class="renewal-value" style="color: ${data.renewal.auto_renews ? 'var(--red)' : 'var(--green)'}">${data.renewal.auto_renews ? 'Yes ⚠️' : 'No'}</div>
+          </div>
+          <div class="renewal-stat">
+            <div class="renewal-label">Notice to Cancel</div>
+            <div class="renewal-value">${data.renewal.notice_to_cancel}</div>
+          </div>
+          <div class="renewal-stat">
+            <div class="renewal-label">Renews To</div>
+            <div class="renewal-value">${data.renewal.renews_to}</div>
+          </div>
+        </div>
+      </div>` : ''}
+
+      ${(tenantRespHtml || landlordRespHtml) ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="section-title">Who's Responsible for What</div>
+        </div>
+        <div class="resp-grid">
+          <div class="resp-col">
+            <div class="resp-label tenant">You (Tenant)</div>
+            ${tenantRespHtml}
+          </div>
+          <div class="resp-col">
+            <div class="resp-label landlord">Landlord</div>
+            ${landlordRespHtml}
+          </div>
+        </div>
+      </div>` : ''}
+
+      ${checklistHtml ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <div class="section-title">Move-Out Checklist</div>
+        </div>
+        ${checklistHtml}
+      </div>` : ''}
+
+      ${nextMovesHtml ? `
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EA87E" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="section-title">Your Next Moves</div>
+        </div>
+        ${nextMovesHtml}
+      </div>` : ''}
+
+      <a href="/" class="analyze-again" onclick="goHome(event)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Analyze another document
+      </a>
+    `;
+  }
+</script>
+</body>
+</html>
