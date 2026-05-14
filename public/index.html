@@ -399,7 +399,20 @@
       sessionStorage.setItem('klearer-results', JSON.stringify(data));
       sessionStorage.setItem('klearer-offer-text', text);
       document.getElementById('app').style.opacity = '0';
-      setTimeout(() => { window.location.href = '/results.html'; }, 400);
+      const routeMap = {
+        lease: '/lease-results.html',
+        offer_letter: '/results.html',
+        insurance: '/results.html',
+        car_contract: '/results.html',
+        medical: '/results.html',
+        bank: '/results.html',
+        student_loan: '/results.html',
+        terms: '/results.html',
+        hoa: '/results.html',
+        other: '/results.html'
+      };
+      const route = routeMap[data.doc_type] || '/results.html';
+      setTimeout(() => { window.location.href = route; }, 400);
     } catch (err) {
       btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyze document';
       btn.style.opacity = '1';
