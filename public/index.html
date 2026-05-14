@@ -144,6 +144,12 @@
     .share-option-sub { font-size: 11px; color: var(--text-3); }
     .share-close { width: 100%; background: rgba(26,46,37,0.05); border: none; border-radius: 12px; padding: 12px; font-size: 13px; color: var(--text-2); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
     .share-close:hover { background: rgba(26,46,37,0.08); }
+    /* LOADING SCREEN */
+    #loading-screen { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+    #loading-screen.show { opacity: 1; pointer-events: all; }
+    .loading-logo { margin-bottom: 2rem; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .loading-msg { font-size: 14px; color: var(--text-2); font-weight: 300; letter-spacing: 0.2px; }
     @media (max-width: 600px) {
       .resources { grid-template-columns: 1fr; }
       .hero-tagline { font-size: 36px; }
@@ -152,7 +158,15 @@
   </style>
 </head>
 <body>
-
+<div id="loading-screen">
+  <div class="loading-logo">
+    <svg width="56" height="56" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="#eef4f0" stroke="#2EA87E" stroke-width="3"/>
+      <text x="50" y="68" font-family="Georgia,serif" font-style="italic" font-size="62" font-weight="700" fill="#2EA87E" text-anchor="middle">k</text>
+    </svg>
+  </div>
+  <div class="loading-msg" id="loading-msg">Reading your document...</div>
+</div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
