@@ -94,7 +94,75 @@ app.post('/api/extract-image-text', upload.single('file'), async (req, res) => {
 app.get('/api/stripe-key', (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '' });
 });
+app.post('/api/analyze-lease', async (req, res) => {
+  const { text } = req.body;
+  if (!text || text.length < 50) return res.status(400).json({ error: 'Document text is too short.' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured.' });
 
+  const prompt = `You are Klearer, an expert tenant rights advisor. Analyze this lease agreement and return ONLY a valid JSON object — no markdown, no explanation.
+
+IMPORTANT: For every insight — include the page number or section where it appears.
+
+Return this exact JSON schema:
+{
+  "doc_title": "short title e.g. 'Lease Agreement — 123 Main St'",
+  "plain_english": "2-3 sentence plain English summary of what this lease means for the tenant",
+  "facts": [
+    { "label": "key fact label", "value": "the value", "location": "page X or section Y" }
+  ],
+  "good": [
+    { "title": "positive thing", "detail": "plain english explanation", "location": "page X" }
+  ],
+  "watch_out": [
+    { "title": "red flag or risk", "detail": "plain english explanation of why this matters", "location": "page X", "severity": "high|medium|low" }
+  ],
+  "deposit": {
+    "amount": "security deposit amount",
+    "can_keep_for": ["list of reasons landlord can keep deposit"],
+    "must_return_within": "number of days landlord must return deposit",
+    "location": "page X"
+  },
+  "early_termination": {
+    "allowed": true,
+    "penalty": "exact penalty amount or description",
+    "notice_required": "how much notice required",
+    "location": "page X"
+  },
+  "renewal": {
+    "auto_renews": true,
+    "notice_to_cancel": "how much notice required to not renew",
+    "renews_to": "month-to-month or another fixed term",
+    "location": "page X"
+  },
+  "responsibilities": {
+    "tenant": ["list of things tenant is responsible for maintaining/paying"],
+    "landlord": ["list of things landlord is responsible for maintaining/paying"]
+  },
+  "move_out_checklist": [
+    "specific thing tenant must do before moving out based on this lease"
+  ],
+  "next_moves": [
+    "specific action item the tenant should take"
+  ]
+}
+
+Rules:
+- facts: pull 5-7 key numbers and dates — rent amount, lease start/end, deposit, notice periods
+- watch_out: order by severity, focus on clauses that could cost the tenant money
+- plain_english: write like you're texting a friend
+- Always include page numbers or section references
+- If something isn't specified in the lease, say "Not specified"
+
+Lease agreement:
+${text.slice(0, 8000)}`;
+
+  try {
+    const raw = await callClaude(apiKey, prompt, 3000);
+    const data = parseJSON(raw);
+    res.json(data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
 app.post('/api/analyze', async (req, res) => {
   const { text } = req.body;
   if (!text || text.length < 50) return res.status(400).json({ error: 'Document text is too short.' });
